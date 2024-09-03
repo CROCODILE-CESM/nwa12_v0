@@ -1,0 +1,6 @@
+# Jupyter Checkpoint
+.ipynb_checkpoints/
+
+# Large files
+*.png
+*.nc
