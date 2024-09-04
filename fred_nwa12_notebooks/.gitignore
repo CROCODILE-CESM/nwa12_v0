@@ -4,3 +4,6 @@
 # Large files
 *.png
 *.nc
+
+# Python
+__pycache__/
