@@ -1,17 +1,22 @@
 #!/usr/bin/env python
+'''
+This script reads the supergrid, mask, and topo file and combines them into one file to create the MOM6 NWA12 grid file
+'''
+
+# Import Packages
 import numpy as np
 import xarray as xr
+import netCDF4
 import numpy as np
 from mpl_toolkits.basemap import pyproj
 from datetime import datetime
 
 
-# decimation factor
+# Decimation factor
 k=2
-
 kp2=k//2
 
-# MOM6 supergrid file
+# Read the MOM6 supergrid file and grab specific variables
 hgrd = xr.open_dataset('input_files/ocean_hgrid.nc')
 x = hgrd['x'].values
 y = hgrd['y'].values
@@ -21,7 +26,7 @@ area = hgrd['area'].values
 angle_dx = hgrd['angle_dx'].values
 hgrd.close()
 
-# Wet/dry mask
+# Read Wet/dry mask and topo and get the variables
 if k==2:
   try:
     msk = xr.open_dataset('input_files/ocean_mask.nc')
@@ -112,11 +117,13 @@ egs  = np.sqrt(domega * (180./np.pi)**2)
 
 
 ####################################################################
-#################### write MOM6 model grid file ####################
+#################### Write MOM6 model grid file ####################
 ####################################################################
-import netCDF4
 
 def write_nc_var(var, name, dimensions, long_name=None, units=None, coordinates=None):
+    '''
+    Add a variable to the netcdf file
+    '''
     nc.createVariable(name, 'f8', dimensions)
     if long_name is not None:
         nc.variables[name].long_name = long_name
@@ -128,7 +135,7 @@ def write_nc_var(var, name, dimensions, long_name=None, units=None, coordinates=
     print(' ... wrote variable {}'.format(name))
 
 
-# create netcdf file
+# Create netcdf file
 filename = 'input_files/NWA12_grid.nc'
 nc = netCDF4.Dataset(filename, 'w', format='NETCDF4')
 nc.Description = 'MOM6 NCAR NWA12 grid (ORCA type)'
@@ -137,7 +144,7 @@ nc.Created = datetime.now().isoformat()
 nc.type = 'NWA12v1 file'
 
 
-# create netcdf dimension
+# Create netcdf dimension
 M, L = qlon.shape
 nc.createDimension('nyp', M)
 nc.createDimension('nxp', L)
@@ -145,7 +152,7 @@ nc.createDimension('ny', M-1)
 nc.createDimension('nx', L-1)
 
 
-# write variable
+# Write Variables
 write_nc_var(tlon, 'tlon', ('ny', 'nx'), 'array of t-grid longitudes', 'degrees_east')
 write_nc_var(tlat, 'tlat', ('ny', 'nx'), 'array of t-grid latitudes', 'degrees_north')
 write_nc_var(ulon, 'ulon', ('ny', 'nxp'), 'array of u-grid longitudes', 'degrees_east')
@@ -173,7 +180,6 @@ if isinstance(depth, xr.DataArray):
   write_nc_var(depth, 'depth', ('ny', 'nx'), 'depth at h points', 'meters')
 
 write_nc_var(ar, 'ar', ('ny', 'nx'), 'grid aspect ratio (dyt/dxt)', 'none')
-
 write_nc_var(egs, 'egs', ('ny', 'nx'), 'grid effective grid spacing', 'degrees')
 
 # close files
