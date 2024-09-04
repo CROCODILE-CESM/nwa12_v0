@@ -5,10 +5,10 @@
 #PBS -l walltime=12:00:00
 #PBS -q casper
 #PBS -m abe
-#PBS -M fredc@ucar.edu
+#PBS -M manishrv@ucar.edu
 
 
 #module load nco
-conda activate sparse
+mamba activate fred_crocodile
 
 jupyter nbconvert --to notebook  --ExecutePreprocessor.kernel_name=python3 --execute gen_nwa12_obc_from_glorys.ipynb
