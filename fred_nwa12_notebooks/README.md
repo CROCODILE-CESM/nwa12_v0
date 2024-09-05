@@ -1,11 +1,11 @@
 # Generating the NWA12 Grid and Boundary Condition Files
-This folder contains the original workflow to create the NWA12 regional grid and boundary conditions (Created by Fred C). 
+This folder contains the original workflow to create the NWA12 regional grid and boundary conditions (Created by Fred C). In it, we create the supergrid, topography, and mask files for the region, NWA12 and then create the boundary conditions with the GLORYS dataset. Please see below for both the file structure, with information about each file, and the workflow for these were generated.
 
 ## File Structure & Information
-
+This section introduces the folders and file structures of the original NWA12 grid/obc generation. Please see below for details.
 ### Folders
-1. `input_files`: Where the output grid files are outputted into.
-2. `plots`: Where output plots go
+1. `input_files`: Where the output grid files are outputted
+2. `plots`: Where output plots are outputted
 3. `obc_glorys`: Folder where all boundary conditions are generated
 
 ### Files
@@ -37,5 +37,19 @@ This folder contains the original workflow to create the NWA12 regional grid and
     5. Save it
 4. Run the `plot_NWA12.ipynb` file. See the plots folder for more information.
 5. That's it for the grid files. Now we open the obc_glorys folder to create the boundary conditions.
-6. Open (don't run) `obc_glorys/gen_nwa12_obc_from_glorys.ipynb`. In it, we:
-    1. Something!
+6. Run `obc_glorys/check_nwa12_obc_from_glorys.ipynb`. In it, we:
+    1. Read in grid files and GLORYS data
+    2. Get Coordinate Extents
+    3. Read GLORYS data, regrid it, Get Boundary Data and Save to NetCDF
+    4. Save Raw Data
+    5. Format & Export to NetCDF
+7. Submit the actual notebook (starts with gen) with all the data to Casper using `obc_glorys/batch_gen_nwa12_obc_from_glorys.sh`
+8. Apply to CESM Run
+
+## Tool Creation
+This section discusses converting this workflow into a tool leveraging similar tools like regional-mom6.
+
+1. Create the rectangle grid using regional-mom6
+2. Check grid numbers being a good divisible number 
+3. Apply masking for the Pacific & Canada using available tools
+4. Generating OBC - Compare Processes
