@@ -1,6 +1,6 @@
 # Regional MOM6 Workflows
 
-This is to be a description of Fred's work used in Gustavo & Mikes builds and Ashley's Regional MOM6 Package. There's a few things to consider about setting up MOM in regional mode and its integrations with CESM, and in a few ways it looks like the workflows diverge. Here's to writing up a cleaner workflow of not just the grid generation, but the setup of the CESM cases.
+This is to be a description of Fred's work used in Gustavo & Mikes builds and Ashley's Regional MOM6 Package. There's a few things to consider about setting up MOM in regional mode and its integrations with CESM, and in a few ways it looks like the workflows diverge. Here's a write up to discuss a clean workflow of the whole regional MOM6 process.
 
 ## Grid Generation
 
@@ -19,14 +19,15 @@ This is to be a description of Fred's work used in Gustavo & Mikes builds and As
 1. Load the GFDL NWA12 Supergrid
 2. Find the extents of that grid
 3. Create h & vgrid from scratch
-4. Read GLORYS data, cut out bathmetry based on extents, and fill lakes
+4. Read GEBCO data, cut out bathmetry based on extents, and fill lakes
+6. Setup Surface Forcing
 
 
 
 ### Differences and Discussion
 It looks like Ashley's work creates the grids from scratch, while Fred's work comes from the other side and subsets a global grid. To combine the best of both worlds, here are some discussion points we probably could tackle to create a neat workflow:
 1. Decide from which direction to create regional grids (subset global or generate from scratch)
-2. Implement tool to trim grid size to a easily divisible number for Supercomputer nodes/MPI 
+2. Do we need to implement tool to trim grid size to a easily divisible number for Supercomputer nodes/MPI 
 3. Implement tool to mask out water we don't want, like the Pacific.
 
 
@@ -58,7 +59,7 @@ The way Ashley has done this is pretty similar to the way Fred does it with a fe
 2. Change CCS Config to get an NWA12 grid file
 3. Generate MOM Config Files in SourceMods
 4. Make XML changes for the following processes
-    1. 
+    1. Derecho is down.
 
 ### Ashley's Work
 1.  Using Visual Case Gen, setup a general CESM case with every component turning off (but MOM) with a data atmosphere and generic grid.
@@ -75,7 +76,7 @@ The way Ashley has done this is pretty similar to the way Fred does it with a fe
 
 ### Differences and Discussion
  To combine the best of both worlds, here are some discussion points we could tackle to create a neat workflow:
-1. The creation of the ESMF grid file is similar to Fred's mosaic2mom6 python script
+1. The creation of the ESMF grid file is (I think) similar to Fred's mosaic2mom6 python script
 
 ## General Discussion Points
 - Can we (or should we) use MOM6_Bathy?
