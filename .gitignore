@@ -1,3 +1,5 @@
 __pycache__/
 *.nc
 .ipynb_checkpoints/
+cesm_fred/
+cesm_rm6/
