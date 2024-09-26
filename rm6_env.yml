@@ -225,4 +225,3 @@ dependencies:
       - xarray==2024.9.0
       - xesmf==0.8.7
       - zict==3.0.0
-prefix: /glade/work/manishrv/conda-envs/vroom_clean_env
