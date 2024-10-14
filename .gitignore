@@ -5,3 +5,5 @@ cesm_fred/
 cesm_rm6/
 .vscode/
 testing/
+mom_input/
+mom_run/
