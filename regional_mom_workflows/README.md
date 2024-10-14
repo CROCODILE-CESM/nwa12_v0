@@ -1,11 +1,11 @@
 # Regional MOM6 Workflows
 
-This is to be a description of Fred's work used in Gustavo & Mikes builds and Ashley's Regional MOM6 Package. There's a few things to consider about setting up MOM in regional mode and its integrations with CESM, and in a few ways it looks like the workflows diverge. Here's a write up to discuss a clean workflow of the whole regional MOM6 process.
+This is the location of all the different regional mom workflows currently in development. In it, you will find regional_mom6, fred's notebook workflow, and crr, which is the pacakage implementation of Fred's worklfow and holds Ashley's work in Regional CaseGen. In this partially completed README, please find an old discussion and description of Fred's work used in Gustavo & Mikes builds and Ashley's Regional MOM6 Package. There's a few things to consider about setting up MOM in regional mode and its integrations with CESM, and in a few ways it looks like the workflows diverge. Here's a write up to discuss a clean workflow of the whole regional MOM6 process.
 
 ## Grid Generation
 
 ### Fred's Work
-1.  Load the GFDL NWA12 Supergrid
+1. Load the GFDL NWA12 Supergrid
 2. Find the extents of that grid
 3. Load the global MOM6 Supergrid, Topo, and Land-Sea Mask
 4. Cut the global supergrid to the regional extents
@@ -26,9 +26,9 @@ This is to be a description of Fred's work used in Gustavo & Mikes builds and As
 
 ### Differences and Discussion
 It looks like Ashley's work creates the grids from scratch, while Fred's work comes from the other side and subsets a global grid. To combine the best of both worlds, here are some discussion points we probably could tackle to create a neat workflow:
-1. Decide from which direction to create regional grids (subset global or generate from scratch)
-2. Do we need to implement tool to trim grid size to a easily divisible number for Supercomputer nodes/MPI 
-3. Implement tool to mask out water we don't want, like the Pacific.
+1. Decide from which direction to create regional grids (subset global or generate from scratch) (Implemented in crr->GridGen)
+2. Do we need to implement tool to trim grid size to a easily divisible number for Supercomputer nodes/MPI (Not Implemented)
+3. Implement tool to mask out water we don't want, like the Pacific. (Implemented in crr->GridGen)
 
 
 ## Boundary Conditions Generation
@@ -58,8 +58,8 @@ The way Ashley has done this is pretty similar to the way Fred does it with a fe
 1. Create an ESMF Mesh Grid file called NWA12_grid with mosaic2mom6.py (I think? It seems very different).
 2. Change CCS Config to get an NWA12 grid file
 3. Generate MOM Config Files in SourceMods
-4. Make XML changes for the following processes
-    1. Derecho is down.
+4. Make XML changes for the following processes (To be added to RegionalCaseGen)
+    1. [List Changes]
 
 ### Ashley's Work
 1.  Using Visual Case Gen, setup a general CESM case with every component turning off (but MOM) with a data atmosphere and generic grid.
