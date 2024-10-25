@@ -1,0 +1,6 @@
+[submodule "regional_mom_workflows/crr"]
+	path = regional_mom_workflows/crr
+	url = https://github.com/CROCODILE-CESM/crocodile-regional-ruckus
+[submodule "regional_mom_workflows/rm6/regional-mom6"]
+	path = regional_mom_workflows/rm6/regional-mom6
+	url = https://github.com/CROCODILE-CESM/regional-mom6

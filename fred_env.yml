@@ -1,0 +1,40 @@
+name: sparse
+channels:
+  - conda-forge
+  - r
+dependencies:
+  - basemap
+  - cartopy
+  - cf_units
+  - cf_xarray
+  - cftime
+  - cmocean
+  - dask-jobqueue
+  - dask-ml
+  - dask-mpi
+  - dask[version='>=2.5.2']
+  - gsw
+  - intake-esm
+  - ipykernel
+  - ipython
+  - matplotlib
+  - mpi4py
+  - nbconvert
+  - netcdf4
+  - numba
+  - numpy
+  - pandas
+  - pop-tools
+  - scipy
+  - seawater
+  - sparse
+  - statsmodels
+  - xarray
+  - xesmf
+  - xgcm
+  - xhistogram
+  - xskillscore
+  - zarr=2.13
+  - ca-certificates
+  - certifi
+  - openssl

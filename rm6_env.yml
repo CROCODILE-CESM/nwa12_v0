@@ -1,0 +1,25 @@
+name: vroom_clean_env
+channels:
+  - conda-forge
+  - r
+dependencies:
+  - esmpy
+  - ipykernel
+  - xarray=2024.7.0
+  - ca-certificates
+  - openssl
+  - matplotlib
+  - pytest
+  - certifi
+  - netcdf4
+  - numpy=2.0
+  - sphinx
+  - pip
+  - pip:
+    - -e regional_mom_workflows/rm6/regional-mom6
+    - myst_parser
+    - nbsphinx
+# Potential Issues:
+# 1.  I ran into an issue calling ESMF_Regrid from the command line, to fix it, either use a different install of ESMF, or
+#     Try mamba uninstall esmf, then pip uninstall xesmf, then mamba install esmf, then pip install xesmf "numpy<2.0.0". 
+#     The dependency tree for xesmf is a bit tough to work with.

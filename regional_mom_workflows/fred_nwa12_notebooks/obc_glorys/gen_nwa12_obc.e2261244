@@ -1,0 +1,256 @@
+[NbConvertApp] Converting notebook gen_nwa12_obc_from_glorys.ipynb to notebook
+Traceback (most recent call last):
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/bin/jupyter-nbconvert", line 8, in <module>
+    sys.exit(main())
+             ^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/jupyter_core/application.py", line 283, in launch_instance
+    super().launch_instance(argv=argv, **kwargs)
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/traitlets/config/application.py", line 1075, in launch_instance
+    app.start()
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 420, in start
+    self.convert_notebooks()
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 597, in convert_notebooks
+    self.convert_single_notebook(notebook_filename)
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 563, in convert_single_notebook
+    output, resources = self.export_single_notebook(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/nbconvertapp.py", line 487, in export_single_notebook
+    output, resources = self.exporter.from_filename(
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 201, in from_filename
+    return self.from_file(f, resources=resources, **kw)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 220, in from_file
+    return self.from_notebook_node(
+           ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/exporters/notebook.py", line 36, in from_notebook_node
+    nb_copy, resources = super().from_notebook_node(nb, resources, **kw)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 154, in from_notebook_node
+    nb_copy, resources = self._preprocess(nb_copy, resources)
+                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/exporters/exporter.py", line 353, in _preprocess
+    nbc, resc = preprocessor(nbc, resc)
+                ^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/preprocessors/base.py", line 48, in __call__
+    return self.preprocess(nb, resources)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 103, in preprocess
+    self.preprocess_cell(cell, resources, index)
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbconvert/preprocessors/execute.py", line 124, in preprocess_cell
+    cell = self.execute_cell(cell, index, store_history=True)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/asyncio/base_events.py", line 687, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbclient/client.py", line 1062, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/glade/work/manishrv/conda-envs/fred_crocodile/lib/python3.12/site-packages/nbclient/client.py", line 918, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+#format and save:
+for s in range(len(segs)):
+    for var in range(len(var_names)):
+        if segs[s] == 1:
+            if new_var_names[var] != 'zeta':
+                da =  vars()['combined_'+new_var_names[var]+'_00'+str(segs[s])].rename({'depth':'nz_segment_001','nyp':'ny_segment_001'}).expand_dims(dim={'nx_segment_001':nx_segment_001})
+                inter_z = inter.rename({'depth':'nz_segment_001'})
+                inter_z = inter_z.expand_dims({'nx_segment_001':nx_segment_001,'time':da.time.values,'ny_segment_001':ny_segment_001})
+                inter_z = inter_z.transpose('nx_segment_001','time','nz_segment_001','ny_segment_001')
+                ds = xr.Dataset(
+                    data_vars = dict(
+                        {new_var_names[var]+'_segment_001' : (['nx_segment_001','time','nz_segment_001','ny_segment_001'],da.data),
+                        'dz_'+new_var_names[var]+'_segment_001' : (['nx_segment_001','time','nz_segment_001','ny_segment_001'],inter_z.data),
+                        'lon_segment_001' : (['lon_segment_001'],lon_segment_001),
+                        'lat_segment_001' : (['lat_segment_001'],lat_segment_001),
+                        }),
+                    coords = dict(
+                        time = (['time'],da.time.data),
+                        nz_segment_001 = (['nz_segment_001'], nz_segment_001),
+                        ny_segment_001 = (['ny_segment_001'], ny_segment_001),
+                        nx_segment_001 = (['nx_segment_001'], nx_segment_001),))
+                ds = ds.transpose('time','nz_segment_001','ny_segment_001','nx_segment_001','lon_segment_001','lat_segment_001')
+                ds.time.attrs['calendar']='gregorian'
+                ds.time.attrs['units']='hours since 1950-01-01'
+                ds.time.encoding['_FillValue']=1.e20 
+                ds.lon_segment_001.encoding['_FillValue']=1.e20
+                ds.lat_segment_001.encoding['_FillValue']=1.e20
+                ds.ny_segment_001.encoding['_FillValue']=-10000
+                ds.nz_segment_001.encoding['_FillValue']=-10000
+                ds.nx_segment_001.encoding['_FillValue']=-10000
+                for v in ds:
+                        ds[v].encoding['_FillValue']=1.e20 
+                ds.to_netcdf(out_obc_format_dir+'combined_'+new_var_names[var]+'_00'+str(segs[s])+'_'+year+'.nc',unlimited_dims=('time'))
+            else:
+                nz_zeta =np.linspace(0,1,1)
+                dz_zeta = inter_z[:,:,0:1:,:].transpose('nx_segment_001','nz_segment_001','time','ny_segment_001')
+                da =  vars()['combined_'+new_var_names[var]+'_00'+str(segs[s])].rename({'nyp':'ny_segment_001'}).expand_dims(dim={'nz_segment_001':nz_zeta,'nx_segment_001':nx_segment_001})
+                ds = xr.Dataset(
+                        data_vars = dict(
+                            zeta_segment_001 = (['nx_segment_001','nz_segment_001','time','ny_segment_001'],da.data),
+                            dz_zeta_segment_001 = (['nx_segment_001','nz_segment_001','time','ny_segment_001'],dz_zeta.data),
+                            lon_segment_001 = (['lon_segment_001'],lon_segment_001),
+                            lat_segment_001 = (['lat_segment_001'],lat_segment_001),
+                        ),
+                        coords = dict(
+                            time = (['time'],da.time.data),
+                            nz_segment_001 = (['nz_segment_001'], nz_zeta),
+                            ny_segment_001 = (['ny_segment_001'], ny_segment_001),
+                            nx_segment_001 = (['nx_segment_001'], nx_segment_001),))
+                ds.time.attrs['calendar']='gregorian'
+                ds.time.attrs['units']='days since 1999-12-31'
+                ds.time.encoding['_FillValue']=1.e20 
+                ds.lon_segment_001.encoding['_FillValue']=1.e20
+                ds.lat_segment_001.encoding['_FillValue']=1.e20
+                ds.ny_segment_001.encoding['_FillValue']=-10000
+                ds.nz_segment_001.encoding['_FillValue']=-10000
+                ds.nx_segment_001.encoding['_FillValue']=-10000
+                for v in ds:
+                        ds[v].encoding['_FillValue']=1.e20  
+                ds = ds.transpose('time','nz_segment_001','ny_segment_001','nx_segment_001','lon_segment_001','lat_segment_001')
+                ds.to_netcdf(out_obc_format_dir+'combined_'+new_var_names[var]+'_00'+str(segs[s])+'_'+year+'.nc',unlimited_dims=('time'))
+        elif segs[s] == 2:
+            if new_var_names[var] != 'zeta':
+                da =  vars()['combined_'+new_var_names[var]+'_00'+str(segs[s])].rename({'depth':'nz_segment_002','nxp':'nx_segment_002'}).expand_dims(dim={'ny_segment_002':ny_segment_002})
+                inter_z = inter.rename({'depth':'nz_segment_002'})
+                inter_z = inter_z.expand_dims({'ny_segment_002':ny_segment_002,'time':da.time.values,'nx_segment_002':nx_segment_002})
+                inter_z = inter_z.transpose('ny_segment_002','time','nz_segment_002','nx_segment_002')
+                ds = xr.Dataset(
+                    data_vars = dict(
+                        {new_var_names[var]+'_segment_002' : (['ny_segment_002','time','nz_segment_002','nx_segment_002'],da.data),
+                        'dz_'+new_var_names[var]+'_segment_002': (['ny_segment_002','time','nz_segment_002','nx_segment_002'],inter_z.data),
+                        'lon_segment_002' : (['lon_segment_002'],lon_segment_002),
+                        'lat_segment_002' : (['lat_segment_002'],lat_segment_002),
+                        }),
+                    coords = dict(
+                        time = (['time'],da.time.values),
+                        nz_segment_002 = (['nz_segment_002'], nz_segment_002),
+                        ny_segment_002 = (['ny_segment_002'], ny_segment_002),
+                        nx_segment_002 = (['nx_segment_002'], nx_segment_002),))
+                ds.time.attrs['calendar']='gregorian'
+                ds.time.attrs['units']='days since 1999-12-31'
+                ds.time.encoding['_FillValue']=1.e20 
+                ds.lon_segment_002.encoding['_FillValue']=1.e20
+                ds.lat_segment_002.encoding['_FillValue']=1.e20
+                ds.ny_segment_002.encoding['_FillValue']=-10000
+                ds.nz_segment_002.encoding['_FillValue']=-10000
+                ds.nx_segment_002.encoding['_FillValue']=-10000
+                for v in ds:
+                       ds[v].encoding['_FillValue']=1.e20 
+                ds = ds.transpose('time','nz_segment_002','ny_segment_002','nx_segment_002','lon_segment_002','lat_segment_002')
+                ds.to_netcdf(out_obc_format_dir+'combined_'+new_var_names[var]+'_00'+str(segs[s])+'_'+year+'.nc',unlimited_dims=('time'))
+            else:
+                nz_zeta =np.linspace(0,1,1)
+                dz_zeta = inter_z[:,:,0:1:,:].transpose('ny_segment_002','nz_segment_002','time','nx_segment_002')
+                da =  vars()['combined_'+new_var_names[var]+'_00'+str(segs[s])].rename({'nxp':'nx_segment_002'}).expand_dims(dim={'nz_segment_002':nz_zeta,'ny_segment_002':ny_segment_002})
+                ds = xr.Dataset(
+                        data_vars = dict(
+                            zeta_segment_002 = (['ny_segment_002','nz_segment_002','time','nx_segment_002'],da.data),
+                            dz_zeta_segment_002 = (['ny_segment_002','nz_segment_002','time','nx_segment_002'],dz_zeta.data),
+                            lon_segment_002 = (['lon_segment_002'],lon_segment_002),
+                            lat_segment_002 = (['lat_segment_002'],lat_segment_002),
+                        ),
+                        coords = dict(
+                            time = (['time'],da.time.values),
+                            nz_segment_002 = (['nz_segment_002'], nz_zeta),
+                            ny_segment_002 = (['ny_segment_002'], ny_segment_002),
+                            nx_segment_002 = (['nx_segment_002'], nx_segment_002),))
+                ds.time.attrs['calendar']='gregorian'
+                ds.time.attrs['units']='days since 1999-12-31'
+                ds.time.encoding['_FillValue']=1.e20 
+                ds.lon_segment_002.encoding['_FillValue']=1.e20
+                ds.lat_segment_002.encoding['_FillValue']=1.e20
+                ds.ny_segment_002.encoding['_FillValue']=-10000
+                ds.nz_segment_002.encoding['_FillValue']=-10000
+                ds.nx_segment_002.encoding['_FillValue']=-10000
+                for v in ds:
+                        ds[v].encoding['_FillValue']=1.e20  
+                ds = ds.transpose('time','nz_segment_002','ny_segment_002','nx_segment_002','lon_segment_002','lat_segment_002')
+                ds.to_netcdf(out_obc_format_dir+'combined_'+new_var_names[var]+'_00'+str(segs[s])+'_'+year+'.nc',unlimited_dims=('time'))
+        elif segs[s] == 4:
+            if new_var_names[var] != 'zeta':
+                da =  vars()['combined_'+new_var_names[var]+'_00'+str(segs[s])].rename({'depth':'nz_segment_002','nxp':'nx_segment_004'}).expand_dims(dim={'ny_segment_004':ny_segment_004})
+                inter_z = inter.rename({'depth':'nz_segment_004'})
+                inter_z = inter_z.expand_dims({'ny_segment_004':ny_segment_004,'time':da.time.values,'nx_segment_004':nx_segment_004})
+                inter_z = inter_z.transpose('ny_segment_004','time','nz_segment_004','nx_segment_004')
+                ds = xr.Dataset(
+                    data_vars = dict(
+                        {new_var_names[var]+'_segment_004' : (['ny_segment_004','time','nz_segment_004','nx_segment_004'],da.data),
+                        'dz_'+new_var_names[var]+'_segment_004': (['ny_segment_004','time','nz_segment_004','nx_segment_004'],inter_z.data),
+                        'lon_segment_004' : (['lon_segment_004'],lon_segment_004),
+                        'lat_segment_004' : (['lat_segment_004'],lat_segment_004),
+                        }),
+                    coords = dict(
+                        time = (['time'],da.time.values),
+                        nz_segment_004 = (['nz_segment_004'], nz_segment_004),
+                        ny_segment_004 = (['ny_segment_004'], ny_segment_004),
+                        nx_segment_004 = (['nx_segment_004'], nx_segment_004),))
+                ds.time.attrs['calendar']='gregorian'
+                ds.time.attrs['units']='days since 1999-12-31'
+                ds.time.encoding['_FillValue']=1.e20 
+                ds.lon_segment_004.encoding['_FillValue']=1.e20
+                ds.lat_segment_004.encoding['_FillValue']=1.e20
+                ds.ny_segment_004.encoding['_FillValue']=-10000
+                ds.nz_segment_004.encoding['_FillValue']=-10000
+                ds.nx_segment_004.encoding['_FillValue']=-10000
+                for v in ds:
+                       ds[v].encoding['_FillValue']=1.e20 
+                ds = ds.transpose('time','nz_segment_004','ny_segment_004','nx_segment_004','lon_segment_004','lat_segment_004')
+                ds.to_netcdf(out_obc_format_dir+'combined_'+new_var_names[var]+'_00'+str(segs[s])+'_'+year+'.nc',unlimited_dims=('time'))
+            else:
+                nz_zeta =np.linspace(0,1,1)
+                dz_zeta = inter_z[:,:,0:1:,:].transpose('ny_segment_004','nz_segment_004','time','nx_segment_004')
+                da =  vars()['combined_'+new_var_names[var]+'_00'+str(segs[s])].rename({'nxp':'nx_segment_004'}).expand_dims(dim={'nz_segment_004':nz_zeta,'ny_segment_004':ny_segment_004})
+                ds = xr.Dataset(
+                        data_vars = dict(
+                            zeta_segment_004 = (['ny_segment_004','nz_segment_004','time','nx_segment_004'],da.data),
+                            dz_zeta_segment_004 = (['ny_segment_004','nz_segment_004','time','nx_segment_004'],dz_zeta.data),
+                            lon_segment_004 = (['lon_segment_004'],lon_segment_004),
+                            lat_segment_004 = (['lat_segment_004'],lat_segment_004),
+                        ),
+                        coords = dict(
+                            time = (['time'],da.time.values),
+                            nz_segment_004 = (['nz_segment_004'], nz_zeta),
+                            ny_segment_004 = (['ny_segment_004'], ny_segment_004),
+                            nx_segment_004 = (['nx_segment_004'], nx_segment_004),))
+                ds.time.attrs['calendar']='gregorian'
+                ds.time.attrs['units']='days since 1999-12-31'
+                ds.time.encoding['_FillValue']=1.e20 
+                ds.lon_segment_004.encoding['_FillValue']=1.e20
+                ds.lat_segment_004.encoding['_FillValue']=1.e20
+                ds.ny_segment_004.encoding['_FillValue']=-10000
+                ds.nz_segment_004.encoding['_FillValue']=-10000
+                ds.nx_segment_004.encoding['_FillValue']=-10000
+                for v in ds:
+                        ds[v].encoding['_FillValue']=1.e20  
+                ds = ds.transpose('time','nz_segment_004','ny_segment_004','nx_segment_004','lon_segment_004','lat_segment_004')
+                ds.to_netcdf(out_obc_format_dir+'combined_'+new_var_names[var]+'_00'+str(segs[s])+'_'+year+'.nc',unlimited_dims=('time'))
+------------------
+
+
+[0;31m---------------------------------------------------------------------------[0m
+[0;31mNameError[0m                                 Traceback (most recent call last)
+Cell [0;32mIn[9], line 14[0m
+[1;32m      8[0m inter_z [38;5;241m=[39m inter_z[38;5;241m.[39mexpand_dims({[38;5;124m'[39m[38;5;124mnx_segment_001[39m[38;5;124m'[39m:nx_segment_001,[38;5;124m'[39m[38;5;124mtime[39m[38;5;124m'[39m:da[38;5;241m.[39mtime[38;5;241m.[39mvalues,[38;5;124m'[39m[38;5;124mny_segment_001[39m[38;5;124m'[39m:ny_segment_001})
+[1;32m      9[0m inter_z [38;5;241m=[39m inter_z[38;5;241m.[39mtranspose([38;5;124m'[39m[38;5;124mnx_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mtime[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mnz_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mny_segment_001[39m[38;5;124m'[39m)
+[1;32m     10[0m ds [38;5;241m=[39m xr[38;5;241m.[39mDataset(
+[1;32m     11[0m     data_vars [38;5;241m=[39m [38;5;28mdict[39m(
+[1;32m     12[0m         {new_var_names[var][38;5;241m+[39m[38;5;124m'[39m[38;5;124m_segment_001[39m[38;5;124m'[39m : ([[38;5;124m'[39m[38;5;124mnx_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mtime[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mnz_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mny_segment_001[39m[38;5;124m'[39m],da[38;5;241m.[39mdata),
+[1;32m     13[0m         [38;5;124m'[39m[38;5;124mdz_[39m[38;5;124m'[39m[38;5;241m+[39mnew_var_names[var][38;5;241m+[39m[38;5;124m'[39m[38;5;124m_segment_001[39m[38;5;124m'[39m : ([[38;5;124m'[39m[38;5;124mnx_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mtime[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mnz_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mny_segment_001[39m[38;5;124m'[39m],inter_z[38;5;241m.[39mdata),
+[0;32m---> 14[0m         [38;5;124m'[39m[38;5;124mlon_segment_001[39m[38;5;124m'[39m : ([[38;5;124m'[39m[38;5;124mlon_segment_001[39m[38;5;124m'[39m],[43mlon_segment_001[49m),
+[1;32m     15[0m         [38;5;124m'[39m[38;5;124mlat_segment_001[39m[38;5;124m'[39m : ([[38;5;124m'[39m[38;5;124mlat_segment_001[39m[38;5;124m'[39m],lat_segment_001),
+[1;32m     16[0m         }),
+[1;32m     17[0m     coords [38;5;241m=[39m [38;5;28mdict[39m(
+[1;32m     18[0m         time [38;5;241m=[39m ([[38;5;124m'[39m[38;5;124mtime[39m[38;5;124m'[39m],da[38;5;241m.[39mtime[38;5;241m.[39mdata),
+[1;32m     19[0m         nz_segment_001 [38;5;241m=[39m ([[38;5;124m'[39m[38;5;124mnz_segment_001[39m[38;5;124m'[39m], nz_segment_001),
+[1;32m     20[0m         ny_segment_001 [38;5;241m=[39m ([[38;5;124m'[39m[38;5;124mny_segment_001[39m[38;5;124m'[39m], ny_segment_001),
+[1;32m     21[0m         nx_segment_001 [38;5;241m=[39m ([[38;5;124m'[39m[38;5;124mnx_segment_001[39m[38;5;124m'[39m], nx_segment_001),))
+[1;32m     22[0m ds [38;5;241m=[39m ds[38;5;241m.[39mtranspose([38;5;124m'[39m[38;5;124mtime[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mnz_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mny_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mnx_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mlon_segment_001[39m[38;5;124m'[39m,[38;5;124m'[39m[38;5;124mlat_segment_001[39m[38;5;124m'[39m)
+[1;32m     23[0m ds[38;5;241m.[39mtime[38;5;241m.[39mattrs[[38;5;124m'[39m[38;5;124mcalendar[39m[38;5;124m'[39m][38;5;241m=[39m[38;5;124m'[39m[38;5;124mgregorian[39m[38;5;124m'[39m
+
+[0;31mNameError[0m: name 'lon_segment_001' is not defined
+
