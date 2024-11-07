@@ -47,17 +47,7 @@
         "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/weights/bilinear_velocity_weights_north.nc",
         "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/weights/bilinear_velocity_weights_south.nc"
     ],
-    "tides": [
-        "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/regrid_segment_003_tidal_elev.nc",
-        "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/regrid_segment_001_tidal_elev.nc",
-        "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/regrid_segment_002_tidal_elev.nc",
-        "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/tu_segment_002.nc",
-        "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/tu_segment_001.nc",
-        "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/tu_segment_003.nc",
-        "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/tz_segment_003.nc",
-        "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/tz_segment_002.nc",
-        "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/nwa-three-boundary-no-tides/tz_segment_001.nc"
-    ],
+    "tides": [],
     "run_files": [
         "/glade/u/home/manishrv/documents/nwa12_0.1/mom_run/nwa-three-boundary-no-tides/MOM_input",
         "/glade/u/home/manishrv/documents/nwa12_0.1/mom_run/nwa-three-boundary-no-tides/MOM_override",
