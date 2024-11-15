@@ -9,7 +9,7 @@ import regional_mom6 as rm6
 import xarray as xr
 import os
 from pathlib import Path
-
+# /glade/u/home/manishrv/documents/nwa12_0.1/tides_dev
 
 
 def main():
@@ -35,7 +35,7 @@ def main():
         )
         varnames = {
             "time": "time",
-            "yh": "latitude",
+            "yh": "latitude",   
             "xh": "longitude",
             "zl": "depth",
             "eta": "zos",

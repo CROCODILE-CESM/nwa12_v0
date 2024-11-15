@@ -90,7 +90,7 @@ def main():
             hgrid=hgrid,
             infile=path_to_bc,  # location of raw boundary
             outfolder=Path(
-                "/glade/u/home/manishrv/documents/nwa12_0.1/regional_mom_workflows/crr/tides_dev/outputs"
+                "/glade/u/home/manishrv/documents/nwa12_0.1/tides_dev/outputs"
             ),
             varnames=varnames,
             segment_name="segment_{:03d}".format(segment_number),
@@ -101,7 +101,7 @@ def main():
         )
 
         seg.outfolder = Path(
-           "/glade/u/home/manishrv/documents/nwa12_0.1/regional_mom_workflows/crr/tides_dev/outputs"
+           "/glade/u/home/manishrv/documents/nwa12_0.1/tides_dev/outputs"
         )
         seg.regrid_tides( tpxo_v, tpxo_u, tpxo_h, times)
     print("...Finished")
