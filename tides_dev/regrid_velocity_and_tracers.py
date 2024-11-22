@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(
     0,
-    "/glade/u/home/manishrv/documents/nwa12_0.1/regional_mom_workflows/crr/crocodileregionalruckus/rm6",
+    "/glade/u/home/manishrv/documents/nwa12_0.1/regional_mom_workflows/CrocoDash/CrocoDash/rm6",
 )
 import regional_mom6 as rm6
 import xarray as xr
@@ -47,7 +47,7 @@ def main():
             hgrid=hgrid,
             infile=path_to_bc,  # location of raw boundary
             outfolder=Path(
-                "/glade/u/home/manishrv/documents/nwa12_0.1/regional_mom_workflows/crr/tides_dev/outputs"
+                "/glade/u/home/manishrv/documents/nwa12_0.1/tides_dev/outputs"
             ),
             varnames=varnames,
             segment_name="segment_{:03d}".format(segment_number),

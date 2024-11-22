@@ -3,7 +3,7 @@ import sys
 
 sys.path.insert(
     0,
-    "/glade/u/home/manishrv/documents/nwa12_0.1/regional_mom_workflows/crr/crocodileregionalruckus/rm6",
+    "/glade/u/home/manishrv/documents/nwa12_0.1/regional_mom_workflows/CrocoDash/CrocoDash/rm6",
 )
 import regional_mom6 as rm6
 from regional_mom6.utils import ap2ep, ep2ap
@@ -12,9 +12,7 @@ import os
 import pandas as pd
 from pathlib import Path
 import numpy as np
-import xesmf as xe
-import regridding as rgd
-import netCDF4
+
 
 def main():
     print("Starting...")
