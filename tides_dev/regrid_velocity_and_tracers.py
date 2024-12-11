@@ -47,7 +47,7 @@ def main():
             hgrid=hgrid,
             infile=path_to_bc,  # location of raw boundary
             outfolder=Path(
-                "/glade/u/home/manishrv/documents/nwa12_0.1/tides_dev/outputs"
+                "/glade/u/home/manishrv/documents/nwa12_0.1/tides_dev/outputs/keith_double_regridding"
             ),
             varnames=varnames,
             segment_name="segment_{:03d}".format(segment_number),
@@ -57,7 +57,7 @@ def main():
             repeat_year_forcing=False,
         )
 
-        seg.regrid_velocity_tracers()
+        seg.regrid_velocity_tracers(rotational_method = rm6.rotation.RotationMethod.KEITH_DOUBLE_REGRIDDING)
     print("...Finished")
     return
 
