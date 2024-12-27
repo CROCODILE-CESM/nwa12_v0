@@ -1,7 +1,0 @@
-20241209 160604.508 ERROR            PET0 ESMF_FieldRegrid.F90:4442 checkGrid Invalid argument  -  some types of regridding (e.g. bilinear) are not supported on Grids that contain a DE of width 1.
-20241209 160604.508 ERROR            PET0 ESMF_FieldRegrid.F90:3229 b_or_p_GridToMesh Invalid argument  - Internal subroutine call returned Error
-20241209 160604.508 ERROR            PET0 ESMF_FieldRegrid.F90:1387 getMeshWithNodesOnFieldLoc Invalid argument  - Internal subroutine call returned Error
-20241209 160604.508 ERROR            PET0 ESMF_FieldRegrid.F90:1011 ESMF_FieldRegridStoreNX Invalid argument  - Internal subroutine call returned Error
-20241209 160604.508 ERROR            PET0 ESMF_Field_C.F90:1137 f_esmf_regridstore Invalid argument  - Internal subroutine call returned Error
-20241209 160604.508 ERROR            PET0 ESMCI_Field.C:1468 ESMCI::Field::regridstore() Invalid argument  - Internal subroutine call returned Error
-20241209 160604.508 ERROR            PET0 ESMC_Field.C:449 ESMC_FieldRegridStore() Invalid argument  - Internal subroutine call returned Error

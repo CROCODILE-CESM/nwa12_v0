@@ -72,7 +72,7 @@ def main():
             f"{orientation}_unprocessed.nc",
         )
         hgrid = xr.open_dataset(
-            "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/2n3b.nwa-three-boundary-new-regridding/hgrid.nc"
+            "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/angle_calc.2.2n3b/hgrid.nc"
         )
         varnames = {
             "time": "time",
@@ -88,7 +88,7 @@ def main():
             hgrid=hgrid,
             infile=path_to_bc,  # location of raw boundary
             outfolder=Path(
-                "/glade/u/home/manishrv/documents/nwa12_0.1/tides_dev/outputs/keith_double_regridding"
+                "/glade/u/home/manishrv/manish_scratch_symlink/tides_dev/outputs/given_angle"
             ),
             varnames=varnames,
             segment_name="segment_{:03d}".format(segment_number),
@@ -96,9 +96,10 @@ def main():
             startdate=date_range[0],
             arakawa_grid=arakawa_grid,
             repeat_year_forcing=False,
+            bathymetry_path = "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/angle_calc.1.2n3b/bathymetry.nc"
         )
 
-        seg.regrid_tides( tpxo_v, tpxo_u, tpxo_h, times, rm6.rotation.RotationMethod.KEITH_DOUBLE_REGRIDDING)
+        seg.regrid_tides( tpxo_v, tpxo_u, tpxo_h, times, rm6.rotation.RotationMethod.GIVEN_ANGLE)
     print("...Finished")
     return
 

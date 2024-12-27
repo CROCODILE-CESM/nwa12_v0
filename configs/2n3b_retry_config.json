@@ -1,5 +1,5 @@
 {
-    "expt_name": "2n3b.Gio.freeze",
+    "expt_name": "2n3b.Gio.freeze.2",
     "date_range": [
         "2005-01-01 00:00:00",
         "2005-04-01 00:00:00"
@@ -29,8 +29,8 @@
         "north",
         "east"
     ],
-    "mom_input_dir": "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/2n3b.Gio.freeze",
-    "mom_run_dir": "/glade/u/home/manishrv/documents/nwa12_0.1/mom_run/2n3b.Gio.freeze",
+    "mom_input_dir": "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/2n3b.Gio.freeze.2",
+    "mom_run_dir": "/glade/u/home/manishrv/documents/nwa12_0.1/mom_run/2n3b.Gio.freeze.2",
     "bathymetry": "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/2n3b.nwa-three-boundary-new-regridding/bathymetry.nc",
     "hgrid": "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/2n3b.nwa-three-boundary-new-regridding/hgrid.nc",
     "vgrid": "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/2n3b.nwa-three-boundary-new-regridding/vcoord.nc",
