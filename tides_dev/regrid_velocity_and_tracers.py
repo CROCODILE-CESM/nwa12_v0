@@ -9,7 +9,6 @@ import regional_mom6 as rm6
 import xarray as xr
 import os
 from pathlib import Path
-# /glade/u/home/manishrv/documents/nwa12_0.1/tides_dev
 
 
 def main():
@@ -59,7 +58,7 @@ def main():
             bathymetry_path = "/glade/u/home/manishrv/documents/nwa12_0.1/mom_input/angle_calc.1.2n3b/bathymetry.nc"
         )
 
-        seg.regrid_velocity_tracers(rotational_method = rm6.rotation.RotationMethod.GIVEN_ANGLE)
+        seg.regrid_velocity_tracers(rotational_method = rm6.rotation.RotationMethod.EXPAND_GRID)
     print("...Finished")
     return
 

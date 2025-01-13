@@ -6,3 +6,4 @@ configs/
 __pycache__/
 .ipynb_checkpoints/
 *.nc
+visualizations/
