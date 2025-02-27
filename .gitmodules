@@ -10,3 +10,6 @@
 [submodule "regional_mom_workflows/older_workflows/rm6/regional-mom6"]
 	path = regional_mom_workflows/older_workflows/rm6/regional-mom6
 	url = https://github.com/CROCODILE-CESM/regional-mom6
+[submodule "dev/CrocoLens"]
+	path = dev/CrocoLens
+	url = https://github.com/CROCODILE-CESM/CrocoLens/

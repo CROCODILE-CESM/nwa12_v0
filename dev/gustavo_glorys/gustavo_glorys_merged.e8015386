@@ -1,0 +1,13 @@
+INFO:__main__:Start File
+INFO:__main__:Start Merge: forcing_obc_segment_001
+INFO:__main__:Open Datasets
+INFO:__main__:Merge Datasets
+INFO:__main__:Saved: /glade/u/home/manishrv/scratch/inputs_rm6/nwa_twenty_year/merged_rm6_output/forcing_obc_segment_001_2000-01-01_to_2006-01-03.nc
+INFO:__main__:Start Merge: forcing_obc_segment_002
+INFO:__main__:Open Datasets
+INFO:__main__:Merge Datasets
+INFO:__main__:Saved: /glade/u/home/manishrv/scratch/inputs_rm6/nwa_twenty_year/merged_rm6_output/forcing_obc_segment_002_2000-01-01_to_2006-01-03.nc
+INFO:__main__:Start Merge: forcing_obc_segment_003
+INFO:__main__:Open Datasets
+INFO:__main__:Merge Datasets
+INFO:__main__:Saved: /glade/u/home/manishrv/scratch/inputs_rm6/nwa_twenty_year/merged_rm6_output/forcing_obc_segment_003_2000-01-01_to_2006-01-03.nc
