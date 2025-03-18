@@ -2,7 +2,7 @@ import os
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 import argparse
-from CrocoDash.data_access.glorys import get_glorys_data_from_cds_api
+from CrocoDash.data_access.datasets.glorys import get_glorys_data_from_cds_api
 
 
 def get_glorys_data_with_pbs(

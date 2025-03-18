@@ -2,7 +2,7 @@ import xarray as xr
 import regional_mom6 as rm6
 from pathlib import Path 
 import sys
-from CrocoDash.data_access import glorys as gl
+from CrocoDash.data_access.datasets import glorys as gl
 from CrocoDash.data_access import driver as dv
 import pandas as pd
 import logging
