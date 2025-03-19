@@ -1,0 +1,28 @@
+{
+    "paths": {
+        "raw_dataset_path": "/glade/work/ajanney/CaribCrocoDash/get_carib_glorys/raw_glorys_data",
+        "hgrid_path": "/glade/work/ajanney/CrocoDash_Input/CrocCaribDefault/ocnice/ocean_hgrid_CrocCaribDefault_9419eb.nc",
+        "output_path": "/glade/u/home/manishrv/documents/croc/dev/large_data_access/regrid_data_piecewise/test_regrid"
+    },
+    "raw_file_regex": {
+        "raw_dataset_pattern": "(north|east|south|west)_unprocessed\\.(\\d{8})_(\\d{8})\\.nc"
+    },
+    "dates": {"start": "20000101", "end": "20000201", "format": "%Y%m%d"},
+    "varnames": {
+        "time": "time",
+        "yh": "latitude",
+        "xh": "longitude",
+        "zl": "depth",
+        "eta": "zos",
+        "u": "uo",
+        "v": "vo",
+        "tracers": {"salt": "so", "temp": "thetao"}
+    },
+    "boundary_number_conversion": {
+        "south": 1, 
+        "north": 2, 
+        "east": 3, 
+        "west": 4
+    },
+    "params": {"buffer_days": 2, "max_files": 100}
+}
