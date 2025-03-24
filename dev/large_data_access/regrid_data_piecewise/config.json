@@ -5,7 +5,8 @@
         "output_path": "/glade/u/home/manishrv/documents/croc/dev/large_data_access/regrid_data_piecewise/test_regrid"
     },
     "raw_file_regex": {
-        "raw_dataset_pattern": "(north|east|south|west)_unprocessed\\.(\\d{8})_(\\d{8})\\.nc"
+        "raw_dataset_pattern": "(north|east|south|west)_unprocessed\\.(\\d{8})_(\\d{8})\\.nc",
+        "regridded_dataset_pattern": "forcing_obc_segment_(\\d{3})_(\\d{8})_(\\d{8})\\.nc"
     },
     "dates": {"start": "20000101", "end": "20000201", "format": "%Y%m%d"},
     "varnames": {

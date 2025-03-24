@@ -13,3 +13,6 @@
 [submodule "dev/CrocoLens"]
 	path = dev/CrocoLens
 	url = https://github.com/CROCODILE-CESM/CrocoLens/
+[submodule "dev/pyDARTdiags"]
+	path = dev/pyDARTdiags
+	url = git@github.com:NCAR/pyDARTdiags.git
