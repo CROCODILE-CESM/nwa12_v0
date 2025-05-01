@@ -2,7 +2,7 @@ print("Starting, loading libraries...")
 from regional_mom6 import regridding as rgd
 import xarray as xr
 import json
-from CrocoDash.data_access import driver as dv
+from CrocoDash.raw_data_access import driver as dv
 from pathlib import Path
 import dask
 
@@ -28,18 +28,19 @@ for segment in rectangular_bounds:
     print("Creating",segment, "regridder")
     if segment == "ic":
         continue
-    ds = xr.open_dataset(f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_data/{tracer}_{segment}_unprocessed.nc")
+    ds = xr.open_dataset(f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_interpolated_data/{tracer}_{segment}_vfilled.nc")
     coords = rgd.coords(hgrid, segment, "segment_{:03d}".format(boundary_number_conversion[segment]))
     ds["lon"] = ds["TLONG"]
     ds["lat"] = ds["TLAT"]
     regridders[segment] = rgd.create_regridder(
         ds[["lon", "lat", tracer]],
         coords,
-        locstream_out = False,
-        outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_data/{segment}_weights.nc"
+        locstream_out = True,
+        outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_data/{segment}_weights.nc"
     )
+
 # Do IC regridder
-ds = xr.open_dataset("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_data/PO4_ic_unprocessed.nc")
+ds = xr.open_dataset("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_interpolated_data/PO4_ic_vfilled.nc")
 ds["lon"] = ds["TLONG"]
 ds["lat"] = ds["TLAT"]
 hgrid["lon"] = hgrid["x"]
@@ -48,10 +49,10 @@ regridders["ic"] = rgd.create_regridder(
     ds[["lon", "lat", tracer]],
     hgrid,
     locstream_out = False,
-    outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_data/ic_weights.nc"
+    outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_data/ic_weights.nc"
 )
-input_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_data")
-output_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_data")
+input_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_interpolated_data")
+output_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_data")
 output_dir.mkdir(parents=True, exist_ok=True)
 
 
@@ -69,6 +70,7 @@ def regrid_and_save(tracer, segment, regridders, input_file, output_file):
             
             # Save regridded dataset
             regridded.to_netcdf(output_file)
+            regridded.close()
 
         print(f"{tracer} {segment} regridded")
 
@@ -81,12 +83,15 @@ def regrid_and_save(tracer, segment, regridders, input_file, output_file):
 
 for tracer in tracers:
     for segment in rectangular_bounds:
-        input_file = str(input_dir / f"{tracer}_{segment}_unprocessed.nc")
+        if segment == "ic" or segment == "west":
+            continue
+        input_file = str(input_dir / f"{tracer}_{segment}_vfilled.nc")
         output_file = str(output_dir / f"{tracer}_{segment}_regridded.nc")
         if Path(output_file).exists():
             print(f"File {output_file} already exists. Skipping.")
             continue
         print(f"Regridding {tracer} {segment}")
         regrid_and_save(tracer, segment, regridders, input_file, output_file)
+
 
 
