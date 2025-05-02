@@ -92,7 +92,6 @@ def regridding_point_analysis(raw_ds, regridded_ds, weights, points, raw_lon_nam
     ax.set_extent([min_lon-1,max_lon+1,min_lat-1,max_lat+1], crs=ccrs.PlateCarree())
     ax.legend(loc="upper left", fontsize="small")
 
-
 def plot_region_mask(ocean_static, hgrid, extent = [-62,-60,56,57]):
 
     # Get points of arakawa c grid from hgrid
