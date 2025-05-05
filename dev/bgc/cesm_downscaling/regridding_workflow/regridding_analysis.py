@@ -5,6 +5,7 @@ import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from CrocoDash.topo import Topo
 
+
 class RegriddingAnalysis:
     """
     Class to analyze the regridding process.
@@ -77,7 +78,7 @@ class RegriddingAnalysis:
         Get the indexes of the source points in the original dataset.
         """
         return self.weights.col.values - 1
-    
+
     @property
     def dest_indexes(self):
         """
@@ -87,34 +88,40 @@ class RegriddingAnalysis:
 
     @property
     def source_lat_lons(self):
-        raw_data_source_points_lat = self.raw_ds[self.raw_lat_name].flatten()[
+        raw_data_source_points_lat = self.raw_ds[self.raw_lat_name].values.flatten()[
             self.source_indexes
         ]
-        raw_data_source_points_lon = self.raw_ds[self.raw_lon_name].flatten()[
+        raw_data_source_points_lon = self.raw_ds[self.raw_lon_name].values.flatten()[
             self.source_indexes
         ]
         return raw_data_source_points_lat, raw_data_source_points_lon
 
+    @property
     def dest_lat_lons(self):
         regridded_data_dest_points_lat = self.regridded_ds[
             self.regrid_lat_name
-        ].flatten()[self.dest_indexes]
+        ].values.flatten()[self.dest_indexes]
         regridded_data_dest_points_lon = self.regridded_ds[
             self.regrid_lon_name
-        ].flatten()[self.dest_indexes]
+        ].values.flatten()[self.dest_indexes]
 
         return regridded_data_dest_points_lat, regridded_data_dest_points_lon
+
     @property
     def unincluded_dest_points(self):
-        return [i for i in range( len(self.regridded_ds[self.regrid_lon_name])) if i not in self.dest_indexes]  # These become zeroes
+        return [
+            i
+            for i in range(len(self.regridded_ds[self.regrid_lon_name]))
+            if i not in self.dest_indexes
+        ]  # These become zeroes
 
     def source_to_dest(self, source_point):
-        return self.weights.row[ np.where(self.weights.col == (source_point + 1))] - 1
+        return self.weights.row[np.where(self.weights.col == (source_point + 1))] - 1
+
     def dest_to_source(self, dest_point):
         return self.weights.col[np.where(self.weights.row == (dest_point + 1))] - 1
 
-
-    def calculate_masks(self, topo: Topo):
+    def find_source_nans(self, surface = True):
         """
         Calculate the masks for the regridding process. Steps:
         1.  Find indexes of all source points that are NaN in all 4 dimensions, publish report
@@ -122,6 +129,41 @@ class RegriddingAnalysis:
         3. Using the topo masks, identify which dest points are okay to be NaN and which aren't. Publish report
         4. From unicluded dest points, make sure those all fall in the mask area, publish report.
         """
+        if surface:
+            nan_locs =  self.raw_ds[self.raw_var_name][0,0].isnull()
+
+        else:
+            nan_locs = self.raw_ds[self.raw_var_name][0].isnull()
+
+    def find_dest_nans(self, surface = True):
+        if surface:
+            nan_locs =  self.regridded_ds[self.regrid_var_name][0,0].isnull()
+
+        else:
+            nan_locs = self.regridded_ds[self.regrid_var_name][0].isnull()
+
+    def get_dest_mask(self, topo: Topo, direction):
+
+        if direction == "north":
+            q = topo.qmask[-1,:]
+            alt = topo.vmask[-1,:]
+        elif direction == "south":
+            q = topo.qmask[0,:]
+            alt = topo.vmask[0,:]
+        elif direction == "west":
+            q = topo.qmask[:,0]
+            alt = topo.umask[:,0]
+        elif direction == "east":
+            q = topo.qmask[:,-1]
+            alt = topo.umask[:,-1]
+
+        combined_mask = np.empty(q.size + alt.size, dtype=q.dtype)
+        combined_mask[0::2] = q  # Fill even indices with q
+        combined_mask[1::2] = alt  # Fill odd indices with alt
+
+        return combined_mask
 
 
-        
+
+
+    
