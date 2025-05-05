@@ -71,61 +71,48 @@ class RegriddingAnalysis:
         )
         gl.top_labels = gl.right_labels = False
 
-    def calculate_useful_indexes(self):
+    @property
+    def source_indexes(self):
         """
-        Calculate Useful Indexes for the regridding process.
-        self.source_point_indexes : list
-            The indexes of the source points in the original dataset.
-        self.raw_data_source_points_lat : list
-            The latitudes of the source points in the original dataset.
-        self.raw_data_source_points_lon : list
-            The longitudes of the source points in the original dataset.
-        self.dest_point_indexes : list
-            The indexes of the destination points in the regridded dataset.
-        self.regridded_data_dest_points_lat : list
-            The latitudes of the destination points in the regridded dataset.
-        self.regridded_data_dest_points_lon : list
-            The longitudes of the destination points in the regridded dataset.
-        self.dest_to_source : dict
-            A dictionary mapping destination points to source points.
-        self.source_to_dest : dict
-            A dictionary mapping source points to destination points.
-        self.unincluded_dest_points : list
-            The indexes of the destination points that are not included in the regridding process.
+        Get the indexes of the source points in the original dataset.
         """
+        return self.weights.col.values - 1
+    
+    @property
+    def dest_indexes(self):
+        """
+        Get the indexes of the destination points in the regridded dataset.
+        """
+        return self.weights.row.values - 1
 
-        # Get All Points
-        self.source_point_indexes = self.weights.col.values - 1
-        self.raw_data_source_points_lat = self.raw_ds[self.raw_lat_name].flatten()[
-            self.source_point_indexes
+    @property
+    def source_lat_lons(self):
+        raw_data_source_points_lat = self.raw_ds[self.raw_lat_name].flatten()[
+            self.source_indexes
         ]
-        self.raw_data_source_points_lon = self.raw_ds[self.raw_lon_name].flatten()[
-            self.source_point_indexes
+        raw_data_source_points_lon = self.raw_ds[self.raw_lon_name].flatten()[
+            self.source_indexes
         ]
-        self.dest_point_indexes = np.unique(self.weights.row.values - 1)
-        self.regridded_data_dest_points_lat = self.regridded_ds[
+        return raw_data_source_points_lat, raw_data_source_points_lon
+
+    def dest_lat_lons(self):
+        regridded_data_dest_points_lat = self.regridded_ds[
             self.regrid_lat_name
-        ].flatten()[self.dest_point_indexes]
-        self.regridded_data_dest_points_lon = self.regridded_ds[
+        ].flatten()[self.dest_indexes]
+        regridded_data_dest_points_lon = self.regridded_ds[
             self.regrid_lon_name
-        ].flatten()[self.dest_point_indexes]
+        ].flatten()[self.dest_indexes]
 
-        # Get it in term of dest points (which are 1-D)
-        self.dest_to_source = {}
+        return regridded_data_dest_points_lat, regridded_data_dest_points_lon
+    @property
+    def unincluded_dest_points(self):
+        return [i for i in range( len(self.regridded_ds[self.regrid_lon_name])) if i not in self.dest_indexes]  # These become zeroes
 
-        for i in self.dest_point_indexes:
-            indexes = np.where(self.weights.row == (i + 1))
-            source_indexes = self.weights.col[indexes]
-            self.dest_to_source[i] = source_indexes
+    def source_to_dest(self, source_point):
+        return self.weights.row[ np.where(self.weights.col == (source_point + 1))] - 1
+    def dest_to_source(self, dest_point):
+        return self.weights.col[np.where(self.weights.row == (dest_point + 1))] - 1
 
-        self.source_to_dest = {}
-
-        for i in self.source_point_indexes:
-            index = np.where(self.weights.col == (i + 1))
-            dest_index = self.weights.row[index]
-            self.source_to_dest[i] = dest_index
-
-        self.unincluded_dest_points = [i for i in range( len(self.regridded_ds[self.regrid_lon_name])) if i not in self.dest_point_indexes]  # These become zeroes
 
     def calculate_masks(self, topo: Topo):
         """
