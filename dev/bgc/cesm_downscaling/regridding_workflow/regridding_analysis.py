@@ -16,6 +16,7 @@ class RegriddingAnalysis:
         raw_ds,
         regridded_ds,
         weights,
+        *,
         raw_lon_name="TLONG",
         raw_lat_name="TLAT",
         regrid_lon_name="lon",
@@ -87,27 +88,6 @@ class RegriddingAnalysis:
         return self.weights.row.values - 1
 
     @property
-    def source_lat_lons(self):
-        raw_data_source_points_lat = self.raw_ds[self.raw_lat_name].values.flatten()[
-            self.source_indexes
-        ]
-        raw_data_source_points_lon = self.raw_ds[self.raw_lon_name].values.flatten()[
-            self.source_indexes
-        ]
-        return raw_data_source_points_lat, raw_data_source_points_lon
-
-    @property
-    def dest_lat_lons(self):
-        regridded_data_dest_points_lat = self.regridded_ds[
-            self.regrid_lat_name
-        ].values.flatten()[self.dest_indexes]
-        regridded_data_dest_points_lon = self.regridded_ds[
-            self.regrid_lon_name
-        ].values.flatten()[self.dest_indexes]
-
-        return regridded_data_dest_points_lat, regridded_data_dest_points_lon
-
-    @property
     def unincluded_dest_points(self):
         return [
             i
@@ -115,55 +95,90 @@ class RegriddingAnalysis:
             if i not in self.dest_indexes
         ]  # These become zeroes
 
+    def source_index_to_lat_lon(self, source_point):
+        raw_data_source_points_lat = self.raw_ds[self.raw_lat_name].values.flatten()[
+            source_point
+        ]
+        raw_data_source_points_lon = self.raw_ds[self.raw_lon_name].values.flatten()[
+            source_point
+        ]
+        return raw_data_source_points_lat, raw_data_source_points_lon
+
+    def dest_index_to_lat_lon(self, dest_point):
+        raw_data_dest_points_lat = self.regrid_ds[
+            self.regrid_lat_name
+        ].values.flatten()[dest_point]
+        raw_data_dest_points_lon = self.regrid_ds[
+            self.regrid_lon_name
+        ].values.flatten()[dest_point]
+        return raw_data_dest_points_lat, raw_data_dest_points_lon
+    
+    def source_index_to_val(self, source_point):
+        return self.raw_ds[self.raw_var_name].values.flatten()[source_point]
+    def dest_index_to_val(self, dest_point):
+        return self.regrid_ds[self.regrid_var_name].values.flatten()[dest_point]
+
+
     def source_to_dest(self, source_point):
         return self.weights.row[np.where(self.weights.col == (source_point + 1))] - 1
 
     def dest_to_source(self, dest_point):
         return self.weights.col[np.where(self.weights.row == (dest_point + 1))] - 1
 
-    def find_source_nans(self, surface = True):
-        """
-        Calculate the masks for the regridding process. Steps:
-        1.  Find indexes of all source points that are NaN in all 4 dimensions, publish report
-        2. Verify the destination points are similarly NaN, and find if other points are also Nan, publish report
-        3. Using the topo masks, identify which dest points are okay to be NaN and which aren't. Publish report
-        4. From unicluded dest points, make sure those all fall in the mask area, publish report.
-        """
-        if surface:
-            nan_locs =  self.raw_ds[self.raw_var_name][0,0].isnull()
+    def find_source_nans(self, level=0, include_zeros=False):
+        vals = self.raw_ds[self.raw_var_name][0, level]
 
+
+        if include_zeros:
+            res = vals.is_null() | (vals == 0)
         else:
-            nan_locs = self.raw_ds[self.raw_var_name][0].isnull()
+            res = vals.is_null()
 
-    def find_dest_nans(self, surface = True):
-        if surface:
-            nan_locs =  self.regridded_ds[self.regrid_var_name][0,0].isnull()
+        return res
 
+    def find_dest_nans(self, level=0, include_zeros=False):
+
+        vals = self.regridded_ds[self.regrid_var_name][0, level]
+
+        if include_zeros:
+            res = vals.is_null() | (vals == 0)
         else:
-            nan_locs = self.regridded_ds[self.regrid_var_name][0].isnull()
+            res = vals.isnull()
 
-    def get_dest_mask(self, topo: Topo, direction):
+        return res
 
-        if direction == "north":
-            q = topo.qmask[-1,:]
-            alt = topo.vmask[-1,:]
-        elif direction == "south":
-            q = topo.qmask[0,:]
-            alt = topo.vmask[0,:]
-        elif direction == "west":
-            q = topo.qmask[:,0]
-            alt = topo.umask[:,0]
-        elif direction == "east":
-            q = topo.qmask[:,-1]
-            alt = topo.umask[:,-1]
+    def find_dest_nan_indexes_over_ocean(self, topo, level=0, include_zeros=False):
+        """
+        Find Destination NaNs over ocean
+        """
 
-        combined_mask = np.empty(q.size + alt.size, dtype=q.dtype)
-        combined_mask[0::2] = q  # Fill even indices with q
-        combined_mask[1::2] = alt  # Fill odd indices with alt
-
-        return combined_mask
+        # Filter dest_nans to ones on our destination
+        dest_nans = self.find_dest_nans(level=level, include_zeros=include_zeros)
+        output_indexes = []
+        for i in range(dest_nans.shape[0]):
+            if dest_nans[i] and topo.point_is_ocean(
+                lon=self.regridded_ds[self.regrid_lon_name][i],
+                lat=self.regridded_ds[self.regrid_lat_name][i],
+            ):
+                output_indexes.append(i)
 
 
+        return output_indexes
 
+    def check_source_points_on_dest_nans_over_ocean(
+        self, topo, level=0, include_zeros=False
+    ):
+        dest_nan_list = self.find_dest_nan_indexes_over_ocean(
+            topo, level, include_zeros
+        )
 
-    
+        for i in dest_nan_list:
+            if type(i) == tuple:
+                raise NotImplementedError()
+            else:
+                source_points = self.dest_to_source(i)
+                vals = self.source_index_to_val(source_points) 
+                print(
+                    f"Source points involved in NaN dest point {i} are: {source_points}. The NaN source point are {vals}"
+                )
+
