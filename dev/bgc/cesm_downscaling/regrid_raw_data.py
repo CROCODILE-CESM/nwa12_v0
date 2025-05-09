@@ -17,8 +17,16 @@ boundary_number_conversion = {
     "south": 1,
     "north": 2,
     "east": 3,
-    "west": 4
 }
+
+# print("Reading Masks...")
+# mask_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_masked_interpolated_data/")
+# masks = {}
+# for key in boundary_number_conversion:
+#     masks[key] = {
+#         "source":xr.open_dataset(mask_folder/f"source_mask_{key}.nc")["mask"].values,
+#         "dest":xr.open_dataset(mask_folder/f"dest_mask_{key}.nc")["mask"].values
+#     }
 
 print("Creating regridders...")
 # Create regridders for each segment
@@ -26,9 +34,9 @@ tracer = "PO4"
 regridders = {}
 for segment in rectangular_bounds:
     print("Creating",segment, "regridder")
-    if segment == "ic":
+    if segment == "ic" or segment == "west":
         continue
-    ds = xr.open_dataset(f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_interpolated_data/{tracer}_{segment}_vfilled.nc")
+    ds = xr.open_dataset(f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_interpolated_filled_data/{tracer}_{segment}_vfilled.nc")
     coords = rgd.coords(hgrid, segment, "segment_{:03d}".format(boundary_number_conversion[segment]))
     ds["lon"] = ds["TLONG"]
     ds["lat"] = ds["TLAT"]
@@ -36,26 +44,23 @@ for segment in rectangular_bounds:
         ds[["lon", "lat", tracer]],
         coords,
         locstream_out = True,
-        outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_data/{segment}_weights.nc"
+        outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_filled_data/{segment}_weights.nc"
     )
 
 # Do IC regridder
-ds = xr.open_dataset("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_interpolated_data/PO4_ic_vfilled.nc")
-ds["lon"] = ds["TLONG"]
-ds["lat"] = ds["TLAT"]
-hgrid["lon"] = hgrid["x"]
-hgrid["lat"] = hgrid["y"]
-regridders["ic"] = rgd.create_regridder(
-    ds[["lon", "lat", tracer]],
-    hgrid,
-    locstream_out = False,
-    outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_data/ic_weights.nc"
-)
-input_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_interpolated_data")
-output_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_data")
-output_dir.mkdir(parents=True, exist_ok=True)
-
-
+# ds = xr.open_dataset("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_data/PO4_ic_unprocessed.nc")
+# ds["lon"] = ds["TLONG"]
+# ds["lat"] = ds["TLAT"]
+# hgrid["lon"] = hgrid["x"]
+# hgrid["lat"] = hgrid["y"]
+# regridders["ic"] = rgd.create_regridder(
+#     ds[["lon", "lat", tracer]],
+#     hgrid,
+#     locstream_out = False,
+#     outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_data/ic_weights.nc"
+# )
+input_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_interpolated_filled_data")
+output_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_filled_data")
 
 def regrid_and_save(tracer, segment, regridders, input_file, output_file):
     """Regrids and saves the dataset for a specific tracer-segment pair."""
@@ -86,7 +91,7 @@ for tracer in tracers:
         if segment == "ic" or segment == "west":
             continue
         input_file = str(input_dir / f"{tracer}_{segment}_vfilled.nc")
-        output_file = str(output_dir / f"{tracer}_{segment}_regridded.nc")
+        output_file = str(output_dir / f"{tracer}_{segment}_regridded_with_fills.nc")
         if Path(output_file).exists():
             print(f"File {output_file} already exists. Skipping.")
             continue

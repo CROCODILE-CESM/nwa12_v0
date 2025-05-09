@@ -4,18 +4,22 @@ from pathlib import Path
 import json
 from CrocoDash.raw_data_access import driver as dv
 
-
+south_source_points_to_fill = [4245, 4246, 4687] # have to unravel these bad boys
+south_source_points_to_fill_with = [4247, 4247, 4688]
+north_source_points_to_fill = [49649, 50138]
+north_source_points_to_fill_with = [49650, 50139]
 def main():
-    
-    raw_interpolated_data_path = Path("/glade/u/home/manishrv/scratch/bgc/raw_interpolated_data")
+    input_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_data")
+    output_dir = Path("/glade/u/home/manishrv/scratch/bgc/raw_interpolated_filled_data")
     hgrid = xr.open_dataset("/glade/derecho/scratch/manishrv/croc_input/nwa_in_crocesm/ocnice/ocean_hgrid.nc")
     with open("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/list_of_tracers.json")as f:
         tracers = json.load(f)["tracers"]
     rectangular_bounds = dv.get_rectangular_segment_info(hgrid)
-    input_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_data")
-    output_dir = raw_interpolated_data_path
+    
     for tracer in tracers:
         for segment in rectangular_bounds.keys():
+            if segment == "ic" or segment == "west":
+                continue
             input_file = str(input_dir / f"{tracer}_{segment}_unprocessed.nc")
             output_file = (output_dir / f"{tracer}_{segment}_vfilled.nc")
             if output_file.exists():
@@ -28,6 +32,25 @@ def main():
                 z_dim = "z_t_150m"
             else:
                 raise ValueError(f"Neither 'z_t' nor 'z_t_150m' found in dimensions for {tracer} {segment}!")
+            
+            # Fills
+
+            # Fill NaN points of interest
+            if segment == "south":
+                for index,pt in enumerate(south_source_points_to_fill):
+                    unraveled_nan = np.unravel_index(pt, ds[tracer][0,0].shape)
+                    unraveled_fill = np.unravel_index(south_source_points_to_fill_with[index], ds[tracer][0,0].shape)
+                    print("Previous",ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]].item())
+                    ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]] = ds[tracer][0,0,unraveled_fill[0],unraveled_fill[1]]
+                    print("After",ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]].item())
+            if segment == "north":
+                for index,pt in enumerate(north_source_points_to_fill):
+                    unraveled_nan = np.unravel_index(pt, ds[tracer][0,0].shape)
+                    unraveled_fill = np.unravel_index(north_source_points_to_fill_with[index], ds[tracer][0,0].shape)
+                    print("Previous",ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]].item())
+                    ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]] = ds[tracer][0,0,unraveled_fill[0],unraveled_fill[1]]
+                    print("After",ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]].item())
+            # Vertical Fill
             ds = ds.ffill(dim =z_dim,limit = None)
             ds.to_netcdf(str(output_file))
             print(f"Saved {tracer}_{segment} to {output_file}")

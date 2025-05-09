@@ -16,7 +16,7 @@ boundary_number_conversion = {
     "east": 3,
     "west": 4
 }
-
+bathymetry = xr.open_dataset("/glade/derecho/scratch/manishrv/croc_input/gustavo-glorys-1/ocnice/ocean_topo.nc")
 
 for tracer in tracers:
     for segment in boundary_number_conversion.keys():
@@ -24,14 +24,14 @@ for tracer in tracers:
             continue
         print(f"Starting {tracer} {segment} processing...")
         segment_name = "segment_{:03d}".format(boundary_number_conversion[segment])
-        out_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/processed_interpolated_data")
+        out_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/processed_interpolated_filled_data")
         file_path = out_folder / f"{tracer}_obc_{segment_name}.nc"
         if file_path.exists():
             print(f"Already processed {tracer} {segment}, skipping!")
             continue
         # Open Dataset
-        regridded_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_data")
-        ds = xr.open_dataset(regridded_folder/f"{tracer}_{segment}_regridded.nc")
+        regridded_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_filled_data")
+        ds = xr.open_dataset(regridded_folder/f"{tracer}_{segment}_regridded_with_fills.nc")
         if "z_t" in ds.dims:
             z_dim = "z_t"
         elif "z_t_150m" in ds.dims:
@@ -39,6 +39,11 @@ for tracer in tracers:
         else:
             raise ValueError(f"Neither 'z_t' nor 'z_t_150m' found in dimensions for {tracer} {segment}!")
 
+
+        # Convert the z_dim from cm to m
+        ds[z_dim] =  ds[z_dim]/100
+
+        
         dim_name = ds.variables["__xarray_dataarray_variable__"].dims[-1]
         coords = rgd.coords(hgrid, segment, segment_name)
         ds[tracer] = ds.__xarray_dataarray_variable__
@@ -93,6 +98,9 @@ for tracer in tracers:
         ds[f"{coords.attrs['perpendicular']}_{segment_name}"] = [0]
 
         # Mask dataset one more time for unaavoidable NaNs passed filling
+       
+        ds = ds.drop_vars([tracer])
+
         ds = rgd.mask_dataset(
             ds,
             hgrid,
@@ -119,7 +127,7 @@ for tracer in tracers:
         )
 
         # Save File Out
-        ds = ds.drop_vars([tracer])
+        
         ds.load().to_netcdf(
             out_folder / f"{tracer}_obc_{segment_name}.nc",
             encoding=encoding_dict,
