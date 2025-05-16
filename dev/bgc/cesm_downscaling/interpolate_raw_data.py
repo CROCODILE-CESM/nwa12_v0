@@ -41,14 +41,14 @@ def main():
                     unraveled_nan = np.unravel_index(pt, ds[tracer][0,0].shape)
                     unraveled_fill = np.unravel_index(south_source_points_to_fill_with[index], ds[tracer][0,0].shape)
                     print("Previous",ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]].item())
-                    ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]] = ds[tracer][0,0,unraveled_fill[0],unraveled_fill[1]]
+                    ds[tracer][:,0,unraveled_nan[0],unraveled_nan[1]] = ds[tracer][:,0,unraveled_fill[0],unraveled_fill[1]]
                     print("After",ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]].item())
             if segment == "north":
                 for index,pt in enumerate(north_source_points_to_fill):
                     unraveled_nan = np.unravel_index(pt, ds[tracer][0,0].shape)
                     unraveled_fill = np.unravel_index(north_source_points_to_fill_with[index], ds[tracer][0,0].shape)
                     print("Previous",ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]].item())
-                    ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]] = ds[tracer][0,0,unraveled_fill[0],unraveled_fill[1]]
+                    ds[tracer][:,0,unraveled_nan[0],unraveled_nan[1]] = ds[tracer][:,0,unraveled_fill[0],unraveled_fill[1]]
                     print("After",ds[tracer][0,0,unraveled_nan[0],unraveled_nan[1]].item())
             # Vertical Fill
             ds = ds.ffill(dim =z_dim,limit = None)

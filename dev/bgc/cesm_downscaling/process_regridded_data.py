@@ -24,7 +24,7 @@ for tracer in tracers:
             continue
         print(f"Starting {tracer} {segment} processing...")
         segment_name = "segment_{:03d}".format(boundary_number_conversion[segment])
-        out_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/processed_interpolated_filled_data")
+        out_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/fill_major_negative")
         file_path = out_folder / f"{tracer}_obc_{segment_name}.nc"
         if file_path.exists():
             print(f"Already processed {tracer} {segment}, skipping!")

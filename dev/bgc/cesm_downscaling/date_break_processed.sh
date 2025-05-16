@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the input and output folders
-input_folder="/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/processed_interpolated_filled_data"       # Replace with your folder path
+input_folder="/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/fill_major_negative"       # Replace with your folder path
 output_folder="/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/date_break"    # Replace with your output folder path
 mkdir -p "$output_folder"  # Create the output folder if it doesn't exist
 
