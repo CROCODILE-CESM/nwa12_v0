@@ -11,7 +11,7 @@ import dask
 print("Loading data...")
 hgrid = xr.open_dataset("/glade/derecho/scratch/manishrv/croc_input/nwa_in_crocesm/ocnice/ocean_hgrid.nc")
 rectangular_bounds = dv.get_rectangular_segment_info(hgrid)
-with open("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/list_of_tracers.json")as f:
+with open("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/list_of_physicals.json")as f:
     tracers = json.load(f)["tracers"]
 boundary_number_conversion = {
     "south": 1,
@@ -47,18 +47,18 @@ for segment in rectangular_bounds:
         outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_filled_data/{segment}_weights.nc"
     )
 
-# Do IC regridder
-# ds = xr.open_dataset("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_data/PO4_ic_unprocessed.nc")
-# ds["lon"] = ds["TLONG"]
-# ds["lat"] = ds["TLAT"]
-# hgrid["lon"] = hgrid["x"]
-# hgrid["lat"] = hgrid["y"]
-# regridders["ic"] = rgd.create_regridder(
-#     ds[["lon", "lat", tracer]],
-#     hgrid,
-#     locstream_out = False,
-#     outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_data/ic_weights.nc"
-# )
+#Do IC regridder
+ds = xr.open_dataset("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_data/PO4_ic_unprocessed.nc")
+ds["lon"] = ds["TLONG"]
+ds["lat"] = ds["TLAT"]
+hgrid["lon"] = hgrid["x"]
+hgrid["lat"] = hgrid["y"]
+regridders["ic"] = rgd.create_regridder(
+    ds[["lon", "lat", tracer]],
+    hgrid,
+    locstream_out = False,
+    outfile = f"/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_data/ic_weights.nc"
+)
 input_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/raw_interpolated_filled_data")
 output_dir = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_filled_data")
 
@@ -88,7 +88,7 @@ def regrid_and_save(tracer, segment, regridders, input_file, output_file):
 
 for tracer in tracers:
     for segment in rectangular_bounds:
-        if segment == "ic" or segment == "west":
+        if  segment == "west":
             continue
         input_file = str(input_dir / f"{tracer}_{segment}_vfilled.nc")
         output_file = str(output_dir / f"{tracer}_{segment}_regridded_with_fills.nc")

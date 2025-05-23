@@ -159,11 +159,8 @@ class RegriddingAnalysis:
         # Filter dest_nans to ones on our destination
         dest_nans = self.find_dest_nans(level=level, include_zeros=include_zeros)
         where_nan = np.where(dest_nans)[0]
-        is_ocean = topo.point_is_ocean(
-                lons=self.regridded_ds[self.regrid_lon_name][where_nan].values,
-                lats=self.regridded_ds[self.regrid_lat_name][where_nan].values,
-            )
-        return where_nan[np.where(is_ocean)[0]]
+        is_ocean = self.generate_boundary_dest_mask(topo)
+        return np.intersect1d(where_nan,np.where(is_ocean)[0])
 
 
 
@@ -189,6 +186,27 @@ class RegriddingAnalysis:
     
     def generate_boundary_dest_mask(self, topo):
         mask = topo.point_is_ocean(lats = self.regridded_ds[self.regrid_lat_name].values, lons = self.regridded_ds[self.regrid_lon_name].values)
+
+        mask = np.array(mask)
+
+        # Add the 1cell buffer for the q point required for the boundary condition
+
+        # Identify ocean (1) cells
+        ocean = (mask == 1)
+
+        # Shift left and right to mark buffer zones
+        forward_shift = np.roll(ocean, 1)
+        backward_shift = np.roll(ocean, -1)
+
+        # Set edges to False to avoid wrap-around
+        forward_shift[0] = mask[0]
+        backward_shift[-1] = mask[-1]
+
+        buffer_zone = forward_shift | backward_shift
+        
+        # Add buffer: if it's land (0) and in buffer zone, set to ocean (1)
+        mask[(mask == 0) & buffer_zone] = 1
+
         return mask
     def generate_source_mask(self):
         return  xr.where(~np.isnan(self.raw_ds[self.raw_var_name][0,0]), 1, 0)

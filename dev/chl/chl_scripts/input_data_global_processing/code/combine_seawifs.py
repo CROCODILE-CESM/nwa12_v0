@@ -1,7 +1,7 @@
 import xarray as xr
 import numpy as np
 from pathlib import Path
-from ocean_utils import lateral_fill
+from mom6_bathy.ocean_fill_and_grid_interp import lateral_fill
 from datetime import datetime, timedelta
 
 
@@ -60,7 +60,7 @@ def combine_seawifs(
         output_path = seawifs_path
     else:
         output_path = Path(output_path)
-    file_out = "NEW_SeaWIFS" / file_ext_out
+    file_out = "SeaWIFS" + file_ext_out
 
     # Calculate Date Stuffs
     # First 8 months: 1998, last 4 months: 1997
@@ -69,49 +69,49 @@ def combine_seawifs(
     ]
     date_ends = [
         (
-            (datetime(1998, m + 1, 1) - timedelta(days=1))
-            if m < 8
-            else (
-                (datetime(1997, m + 1, 1) - timedelta(days=1))
-                if m < 12
-                else datetime(1997, 12, 31)
-            )
+
+            (datetime(2010, m + 1, 1) - timedelta(days=1))
+            if m < 12
+            else datetime(2010, 12, 31)
+            
         )
         for m in range(1, 13)
     ]
-    dmid = np.array(
-        [
-            (
-                date_starts[i]
-                + (date_ends[i] - date_starts[i]) / 2
-                - datetime(date_starts[i].year, 1, 1)
-            ).total_seconds()
-            / 86400.0
-            + 1
-            for i in range(12)
-        ]
-    )
+    dmid = np.array([
+    (
+        datetime(2001, date_starts[i].month, date_starts[i].day) +
+        (datetime(2001, date_ends[i].month, date_ends[i].day) - datetime(2001, date_starts[i].month, date_starts[i].day)) / 2
+        - datetime(2001, 1, 1)
+    ).total_seconds() / 86400.0 + 1
+    for i in range(12)
+    ])
 
     # Read one SeaWifs File
 
     file_in = (
         "SEASTAR_SEAWIFS_GAC."
-        + date_starts[0].strftime("%Y%j")
+        + date_starts[0].strftime("%Y%m%d")
         + "_"
-        + date_ends[0].strftime("%Y%j")
+        + date_ends[0].strftime("%Y%m%d")
         + file_ext_in
     )
     ds0 = xr.open_dataset(seawifs_path / file_in)
+    # Get the first file to grab the dimensions, coordinates
 
+    latv= ds0['lat'].values
+    lonv = ds0['lon'].values
     # Parameters
 
     filt_size = 3  # median filter
+
     # Parameters for fill procedure
     eps_std = 1.0e-5
     nmax_std = 1000
     omega_best = 1.96
+        
+    tolerance = 1e-5 # Error Adjustment
+
     # Start Setting Up Fields
-    ntime = 12
     time = xr.DataArray(
         dmid,
         dims=("time",),
@@ -145,7 +145,7 @@ def combine_seawifs(
 
     # Create a DataArray array to hold the input data
     Chl_c = xr.DataArray(
-        np.zeros((ntime, nlat_c, nlon_c)),
+        np.zeros((len(time), nlat_c, nlon_c)),
         dims=("time", "lat", "lon"),
         coords={"time": time, "lat": lat_c, "lon": lon_c},
     )
@@ -154,40 +154,19 @@ def combine_seawifs(
 
     # Read the SeaWIFS data, coarsen, fill NaNs and store in DataArray
     for n, d in enumerate(date_starts):
-
+        print("Iter Month Start:",d)
         # Open Dataset
         file_in = (
             "SEASTAR_SEAWIFS_GAC."
-            + date_starts[n].strftime("%Y%j")
+            + date_starts[n].strftime("%Y%m%d")
             + "_"
-            + date_ends[n].strftime("%Y%j")
+            + date_ends[n].strftime("%Y%m%d")
             + file_ext_in
         )
-        ds = xr.open_dataset(seawifs_path / file_in)
+        ds_bfr = xr.open_dataset(seawifs_path / file_in)
 
-        # Error Adjustment
-        tolerance = 1e-5
-
-        # Create boolean masks where the differences are smaller than the tolerance
-        lat_close = np.all(
-            np.isclose(
-                LandArea["lat"].values, ds[var_name]["lat"].values, atol=tolerance
-            )
-        )
-        lon_close = np.all(
-            np.isclose(
-                LandArea["lon"].values, ds[var_name]["lon"].values, atol=tolerance
-            )
-        )
-
-        # If the differences are too large, raise an error
-        if not lat_close or not lon_close:
-            raise ValueError(
-                "The latitude or longitude values differ too much between the datasets!"
-            )
-        else:
-            ds["lat"] = LandArea.lat
-            ds["lon"] = LandArea.lon
+        #updated on 04/6/22: some files had different dimension indexing which brought index errors
+        ds = xr.Dataset({'chlor_a': xr.DataArray(data   = ds_bfr[var_name].values,dims   = ['lat','lon'], coords = {'lat': latv,'lon': lonv})})
 
         # Mask out values in lakes and inland waters
         Chl_src = xr.where(LandArea, np.nan, ds[var_name])
@@ -210,7 +189,6 @@ def combine_seawifs(
         )
 
         cfm = xr.where(land_c, np.nan, cf)
-
         # Put result in 3D array
         Chl_c.loc[dict(time=time[n])] = c
         Chl_cf.loc[dict(time=time[n])] = cf
@@ -220,6 +198,7 @@ def combine_seawifs(
     Chl_c.attrs = ds0[var_name].attrs
     Chl_cf.attrs = ds0[var_name].attrs
     Chl_cfm.attrs = ds0[var_name].attrs
+
 
     # Create output dataset
     ds_out = xr.Dataset(
@@ -235,4 +214,4 @@ def combine_seawifs(
 
 
 if __name__ == "__main__":
-    combine_seawifs()
+    combine_seawifs(seawifs_path=Path("/glade/derecho/scratch/manishrv/chl"),output_path = Path("/glade/derecho/scratch/manishrv/chl"))

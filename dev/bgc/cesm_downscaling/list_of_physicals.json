@@ -1,0 +1,9 @@
+{
+    "tracers": [
+        "UVEL",
+        "VVEL",
+        "TEMP",
+        "SALT",
+        "SSH"
+    ]
+}

@@ -42,13 +42,9 @@ def create_seawifs_mask(seawifs_path: str | Path):
 
     Other Effects
     -------------
-    - Saves the output dataset to `NEW_LandWater_SeaWIFS.nc` in the same directory as `seawifs_path`.
+    - Saves the output dataset to `LandWater_SeaWIFS.nc` in the same directory as `seawifs_path`.
     - Adds a `history` attribute with creation date and source file path.
 
-    Notes
-    -----
-    - Ocean regions are identified where `LandWater` equals 0 (shallow water) or is >= 6 (deep ocean or shelf).
-    - Land regions include all other values in the original `LandWater` field.
     """
 
     # Get Data
@@ -57,7 +53,7 @@ def create_seawifs_mask(seawifs_path: str | Path):
     LandWaterMask = xr.open_dataset(seawifs_path / "LandWater15ARC.nc")
 
     # Get a SEAWIFS file (only need the coordinates)
-    file_chl = "SEASTAR_SEAWIFS_GAC.19971001_20101031.L3m.MC.CHL.chlor_a.9km.nc"
+    file_chl = "SEASTAR_SEAWIFS_GAC.19970901_20100930.L3m.MC.CHL.chlor_a.9km.nc"
     ds_chl = xr.open_dataset(seawifs_path / file_chl)
 
     # Chunk it
@@ -100,11 +96,11 @@ def create_seawifs_mask(seawifs_path: str | Path):
     # Add a history attribute
     today = date.today()
     dstr = today.strftime("%Y-%m-%d")
-    astr = "Created " + dstr + " from input file " + seawifs_path / "LandWater15ARC.nc"
+    astr = "Created " + dstr + " from input file " + str(seawifs_path / "LandWater15ARC.nc")
     astr
     ds_out.attrs["history"] = astr
 
-    fileout = seawifs_path / "NEW_LandWater_SeaWIFS.nc"
+    fileout = seawifs_path / "LandWater_SeaWIFS.nc"
     ds_out.to_netcdf(fileout)
 
 

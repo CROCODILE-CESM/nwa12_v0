@@ -8,7 +8,7 @@ import numpy as np
 # Get all data required
 print("Loading data...")
 hgrid = xr.open_dataset("/glade/derecho/scratch/manishrv/croc_input/nwa_in_crocesm/ocnice/ocean_hgrid.nc")
-with open("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/list_of_tracers.json")as f:
+with open("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/list_of_physicals.json")as f:
     tracers = json.load(f)["tracers"]
 boundary_number_conversion = {
     "south": 1,
@@ -24,7 +24,7 @@ for tracer in tracers:
             continue
         print(f"Starting {tracer} {segment} processing...")
         segment_name = "segment_{:03d}".format(boundary_number_conversion[segment])
-        out_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/fill_major_negative")
+        out_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/processed_interpolated_filled_data")
         file_path = out_folder / f"{tracer}_obc_{segment_name}.nc"
         if file_path.exists():
             print(f"Already processed {tracer} {segment}, skipping!")
@@ -103,10 +103,10 @@ for tracer in tracers:
 
         ds = rgd.mask_dataset(
             ds,
-            hgrid,
-            None,
+            bathymetry,
             segment,
-            segment_name,
+            y_dim_name = "lath",
+            x_dim_name = "lonh",
         )
 
         # Do Encoding
@@ -134,4 +134,5 @@ for tracer in tracers:
             unlimited_dims="time",
         )
         print(f"....Finished {tracer} {segment} processing!")
+
 

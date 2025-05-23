@@ -60,7 +60,7 @@ def lateral_fill(
     attrs = da_in.attrs
     encoding = da_in.encoding
     coords = da_in.coords
-
+    
     da_in, isvalid_mask = xr.broadcast(da_in, isvalid_mask)
 
     if len(non_lateral_dims) > 0:
@@ -84,7 +84,7 @@ def lateral_fill(
     else:
         da_out = xr.full_like(da_in, fill_value=np.nan)
         da_out[:, :] = lateral_fill_np_array(
-            da_in.data, isvalid_mask.data, ltripole, tol, use_sor, rc, max_iter
+            da_in.data, isvalid_mask.values.astype(bool), ltripole, tol, use_sor, rc, max_iter
         )
 
     da_out.attrs = attrs
@@ -362,6 +362,7 @@ def latlon2ji(src_lat, src_lon, lat, lon):
 
 
 def super_interp(src_lat, src_lon, data, spr_lat, spr_lon):
+    data = data.values
     nj, ni = data.shape
     dy, dx = 180.0 / nj, 360.0 / ni
     j0, i0, j1, i1 = latlon2ji(src_lat, src_lon, spr_lat, spr_lon)

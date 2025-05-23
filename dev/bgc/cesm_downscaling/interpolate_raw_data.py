@@ -4,8 +4,8 @@ from pathlib import Path
 import json
 from CrocoDash.raw_data_access import driver as dv
 
-south_source_points_to_fill = [4245, 4246, 4687] # have to unravel these bad boys
-south_source_points_to_fill_with = [4247, 4247, 4688]
+south_source_points_to_fill = [4245, 4246, 4687,4244,4686] # have to unravel these bad boys
+south_source_points_to_fill_with = [4247, 4247, 4688,4245,4687]
 north_source_points_to_fill = [49649, 50138]
 north_source_points_to_fill_with = [49650, 50139]
 def main():
