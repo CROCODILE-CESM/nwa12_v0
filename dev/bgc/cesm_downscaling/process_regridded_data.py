@@ -8,7 +8,7 @@ import numpy as np
 # Get all data required
 print("Loading data...")
 hgrid = xr.open_dataset("/glade/derecho/scratch/manishrv/croc_input/nwa_in_crocesm/ocnice/ocean_hgrid.nc")
-with open("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/list_of_physicals.json")as f:
+with open("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/list_of_tracers.json")as f:
     tracers = json.load(f)["tracers"]
 boundary_number_conversion = {
     "south": 1,

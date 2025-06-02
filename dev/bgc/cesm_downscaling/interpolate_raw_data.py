@@ -26,9 +26,9 @@ def main():
                 print(f"Already processed {tracer} {segment}, skipping!")
                 continue
             ds = xr.open_dataset(input_file)
-            if "z_t" in ds.dims:
+            if "z_t" in ds[tracer].dims:
                 z_dim = "z_t"
-            elif "z_t_150m" in ds.dims:
+            elif "z_t_150m" in ds[tracer].dims:
                 z_dim = "z_t_150m"
             else:
                 raise ValueError(f"Neither 'z_t' nor 'z_t_150m' found in dimensions for {tracer} {segment}!")
