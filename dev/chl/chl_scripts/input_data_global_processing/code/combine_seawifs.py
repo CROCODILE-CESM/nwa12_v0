@@ -1,7 +1,7 @@
 import xarray as xr
 import numpy as np
 from pathlib import Path
-from mom6_bathy.ocean_fill_and_grid_interp import lateral_fill
+from global_fill_interp import lateral_fill
 from datetime import datetime, timedelta
 
 

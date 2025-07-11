@@ -8,7 +8,7 @@ import numpy as np
 # Get all data required
 print("Loading data...")
 hgrid = xr.open_dataset("/glade/derecho/scratch/manishrv/croc_input/nwa_in_crocesm/ocnice/ocean_hgrid.nc")
-with open("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/list_of_tracers.json")as f:
+with open("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/list_of_physicals.json")as f:
     tracers = json.load(f)["tracers"]
 boundary_number_conversion = {
     "south": 1,
@@ -32,16 +32,17 @@ for tracer in tracers:
         # Open Dataset
         regridded_folder = Path("/glade/u/home/manishrv/documents/croc/dev/bgc/cesm_downscaling/regridded_interpolated_filled_data")
         ds = xr.open_dataset(regridded_folder/f"{tracer}_{segment}_regridded_with_fills.nc")
-        if "z_t" in ds.dims:
-            z_dim = "z_t"
-        elif "z_t_150m" in ds.dims:
-            z_dim = "z_t_150m"
-        else:
-            raise ValueError(f"Neither 'z_t' nor 'z_t_150m' found in dimensions for {tracer} {segment}!")
+        if tracer != "SSH":
+            if "z_t" in ds.dims:
+                z_dim = "z_t"
+            elif "z_t_150m" in ds.dims:
+                z_dim = "z_t_150m"
+            else:
+                raise ValueError(f"Neither 'z_t' nor 'z_t_150m' found in dimensions for {tracer} {segment}!")
 
 
-        # Convert the z_dim from cm to m
-        ds[z_dim] =  ds[z_dim]/100
+            # Convert the z_dim from cm to m
+            ds[z_dim] =  ds[z_dim]/100
 
         
         dim_name = ds.variables["__xarray_dataarray_variable__"].dims[-1]
@@ -67,6 +68,8 @@ for tracer in tracers:
 
 
         # Fill Missing Data
+        if tracer == "SSH":
+            z_dim = None
         ds[tracer] = rgd.fill_missing_data(
                     ds[tracer_name],
                     xdim=dim_name,
@@ -74,17 +77,18 @@ for tracer in tracers:
                 )
         
         # Do vertical encoding
-        ds = rgd.vertical_coordinate_encoding(
-            ds, tracer_name, segment_name, z_dim
-        )
+        if tracer != "SSH":
+            ds = rgd.vertical_coordinate_encoding(
+                ds, tracer_name, segment_name, z_dim
+            )
 
         ds = rgd.add_secondary_dimension(
             ds, tracer_name, coords, segment_name
         )
-
-        ds = rgd.generate_layer_thickness(
-            ds, tracer_name, segment_name, z_dim
-        )
+        if tracer != "SSH":
+            ds = rgd.generate_layer_thickness(
+                ds, tracer_name, segment_name, z_dim
+            )
                 
         # Don't need to adjust time attribute, it's correct, or is found in the subset stage 
 

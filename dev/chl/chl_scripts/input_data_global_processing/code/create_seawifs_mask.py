@@ -1,4 +1,3 @@
-import xesmf as xe
 import xarray as xr
 from pathlib import Path
 from datetime import date
