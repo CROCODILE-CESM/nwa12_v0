@@ -1,0 +1,12 @@
+#!/bin/bash -l
+#PBS -N regrid_bathy
+#PBS -A p93300012
+#PBS -l select=1:ncpus=32:mem=160GB
+#PBS -l walltime=12:00:00
+#PBS -q main
+#PBS -m abe
+
+
+echo "Starting job at `date`"
+conda activate CrocoDash
+ESMF_Regrid -s bathymetry_original.nc -d bathymetry_unfinished.nc -m bilinear --src_var depth --dst_var depth --netcdf4 --src_regional --dst_regional
