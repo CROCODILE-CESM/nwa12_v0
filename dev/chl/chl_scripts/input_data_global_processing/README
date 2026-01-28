@@ -1,2 +1,0 @@
-This subfolder contains the code to generate the processed global chloropyll file directly from raw data from NASA earthdata: data/SeaWIFS.L3m.MC.CHL.chlor_a.0.25deg.nc
-Run code/driver.py, you need an earthdata login

@@ -16,3 +16,6 @@
 [submodule "dev/pyDARTdiags"]
 	path = dev/pyDARTdiags
 	url = git@github.com:NCAR/pyDARTdiags.git
+[submodule "regional_mom_workflows/mom6_bathy"]
+	path = regional_mom_workflows/mom6_bathy
+	url = https://github.com/NCAR/mom6_bathy
