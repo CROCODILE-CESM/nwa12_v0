@@ -13,8 +13,8 @@ Key submodules:
 - `regional_mom_workflows/regional-mom6` — MOM6 configuration, forcing generation, regridding
 - `regional_mom_workflows/mom6_forge` — Grid, bathymetry, and vertical grid generation
 - `regional_mom_workflows/visualCaseGen` — Jupyter GUI for CESM case creation (constraint-satisfaction driven)
-- `regional_mom_workflows/diag_manager` — MOM6 diagnostics GUI
-- `dev/pyDARTdiags` — DART data assimilation diagnostics
+- `dev/SeaSloth` — Performance benchmarking suite for CrocoDash/mom6_forge/xESMF; tracks operation timing across commits and publishes an interactive HTML dashboard via ASV
+- `regional_mom_workflows/gallery` — CrocoGallery, is the main demo and tutorial place for CrocoDash
 
 ## Important Paths on GLADE
 
@@ -35,6 +35,8 @@ Key submodules:
 - `forcing_configurations/` — forcing config registry
 - `rm6/` — embedded submodule copy of regional-mom6
 - `visualCaseGen/` — embedded submodule copy of visualCaseGen
+- `demos/` — embedded submodule copy of CrocoGallery
+
 
 **visualCaseGen** uses constraint satisfaction (via `ProConPy/csp_solver.py` and `config_var.py`) to validate CESM case configs before creation. Interfaces with CIME through `cime_interface.py`.
 
@@ -44,12 +46,9 @@ Key submodules:
 
 ## Linting
 
-All packages use **black**. Always run before committing.
+mom6_forge, CrocoDash, CrocoGallery use **black**. Always run before committing, except for CrocoDash, used dev_tools/black_CrocoDash.sh
 
 ```bash
-# Check
-black --check --diff <package_src_dir>
-
 # Apply
 black <package_src_dir>
 ```
@@ -59,6 +58,7 @@ Per-package source paths:
 - regional-mom6: `regional_mom6/`
 - mom6_forge: `mom6_forge/`
 - visualCaseGen: `visualCaseGen/` and `ProConPy/`
+- CrocoGallery: `gallery/`
 - pyDARTdiags: `src/pydartdiags/`
 
 ## Conda Environments
@@ -69,9 +69,8 @@ Each submodule under `regional_mom_workflows/` has its own dedicated conda envir
 |---|---|
 | `CrocoDash` | `CrocoDash` |
 | `mom6_forge` | `mom6_forge` |
-| `regional-mom6` | (uses CrocoDash env) |
-| `visualCaseGen` | (uses CrocoDash env) |
-| `pyDARTdiags` | (its own env) |
+| `regional-mom6` | `mom6-regional-dev` |
+| `visualCaseGen` | `visualCaseGen` |
 
 Example: `conda run -n mom6_forge pytest tests/`
 
@@ -107,18 +106,6 @@ pytest tests/
 ```
 Tests are tiered: `1_unit/`, `2_integration/`, `3_system/`, `4_static/`.
 
-**pyDARTdiags** (from `dev/pyDARTdiags/`):
-```bash
-pytest --cov=pydartdiags tests/
-```
-
-## Python Version Requirements
-
-- `visualCaseGen`: `>=3.11.10,<3.13` (strict; enforced in pyproject.toml)
-- `CrocoDash` environment: `>=3.11.10,<3.12`
-- `mom6_forge`: `>=3.11,<3.15`
-- `pyDARTdiags`: 3.8+
-- `regional-mom6`: 3.8+
 
 ## Submodule Management
 
@@ -130,6 +117,42 @@ git submodule update --init --recursive
 Several submodules contain nested submodules (e.g., `visualCaseGen` embeds `external/mom6_forge/` and `external/ipyfilechooser/`; `CrocoDash` embeds `rm6/` and `visualCaseGen/`). Always use `--recursive`.
 
 When making changes that span the outer repo and a submodule, commit the submodule first, then update the pointer in the outer repo.
+
+## Fast CrocoDash Case Setup (Minimal / NYF)
+
+For quick test or reference cases, flat bathymetry, NYF compset — use this pattern with the `CrocoDash` conda env:
+
+```python
+from pathlib import Path
+from CrocoDash.grid import Grid
+from CrocoDash.topo import Topo
+from CrocoDash.vgrid import VGrid
+from CrocoDash.case import Case
+
+CESMROOT = Path("~/work/installs/CROCESM_workshop_2025").expanduser()
+CASEROOT = Path("~/croc_cases/<casename>").expanduser()
+INPUTDIR = Path("/glade/u/home/manishrv/scratch/croc_input/<casename>")
+
+grid = Grid(lenx=10.0, leny=10.0, resolution=1.0, xstart=-60.0, ystart=30.0, name="<name>")
+topo = Topo(grid, min_depth=10.0, git=False)
+topo.set_flat(1000.0)
+vgrid = VGrid.uniform(nk=10, depth=1000.0, name="<name>")
+
+case = Case(
+    cesmroot=CESMROOT, caseroot=CASEROOT, inputdir=INPUTDIR,
+    compset="1850_DATM%NYF_SLND_SICE_MOM6%REGIONAL_SROF_SGLC_SWAV",
+    ocn_grid=grid, ocn_topo=topo, ocn_vgrid=vgrid,
+    atm_grid_name="T62", machine="derecho", project="ncgd0011", override=True,
+)
+case.configure_forcings(
+    date_range = ["2020-01-01 00:00:00", "2020-01-09 00:00:00"]
+)
+case.process_forcings()
+```
+
+- **NYF compset**: `1850_DATM%NYF_SLND_SICE_MOM6%REGIONAL_SROF_SGLC_SWAV` (same as CR_JRA alias but with `DATM%NYF`)
+- **Forcings are required** — every CrocoDash case must call `configure_forcings` then `process_forcings`. There is no valid case without them.
+- `case.setup` generates `Buildconf/*.input_data_list` (useful for checking the file manifest), but the case is not runnable until forcings are configured and processed.
 
 ## Development Workflow
 

@@ -19,3 +19,15 @@
 [submodule "regional_mom_workflows/mom6_bathy"]
 	path = regional_mom_workflows/mom6_bathy
 	url = https://github.com/NCAR/mom6_bathy
+[submodule "dev/SeaSloth"]
+	path = dev/SeaSloth
+	url = git@github.com:CROCODILE-CESM/SeaSloth.git
+[submodule "regional_mom_workflows/crocontainer"]
+	path = regional_mom_workflows/crocontainer
+	url = git@github.com:CROCODILE-CESM/crocontainer.git
+[submodule "regional_mom_workflows/gallery"]
+	path = regional_mom_workflows/gallery
+	url = git@github.com:CROCODILE-CESM/CrocoGallery.git
+[submodule "regional_mom_workflows/visualCaseGen"]
+	path = regional_mom_workflows/visualCaseGen
+	url = git@github.com:CROCODILE-CESM/visualCaseGen.git
