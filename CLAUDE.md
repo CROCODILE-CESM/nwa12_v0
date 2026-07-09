@@ -154,6 +154,140 @@ case.process_forcings()
 - **Forcings are required** — every CrocoDash case must call `configure_forcings` then `process_forcings`. There is no valid case without them.
 - `case.setup` generates `Buildconf/*.input_data_list` (useful for checking the file manifest), but the case is not runnable until forcings are configured and processed.
 
+## MCP Servers
+
+Three MCP servers expose CROC functionality to LLM agents. All are private repos under the CROCODILE-CESM org.
+
+| Server | Repo | Dev path | Purpose |
+|--------|------|----------|---------|
+| CrocoDash MCP | `CROCODILE-CESM/MCP_CrocoDash` (public) | `dev/MCP_CrocoDash/` | Grid creation, case setup, forcing config/processing |
+| CESM Runner MCP | `CROCODILE-CESM/MCP_cesm_runner` (private) | `dev/MCP_cesm_runner/` | Case build, submit, xmlquery/change, log monitoring |
+| Regional Ocean Debugger MCP | `CROCODILE-CESM/MCP_regional_ocean_debugger` (private) | `dev/MCP_regional_ocean_debugger/` | Log triage, MOM_input inspection, CFL checks, domain knowledge search |
+
+### Full workflow with all three servers
+
+A complete session — from blank slate to running model — looks like this:
+
+**Step 1 — Define and set up the case (CrocoDash MCP)**
+```
+"Create a 1/4° case over the Gulf of Mexico for Jan–Feb 2020 using GLORYS forcing on Derecho"
+→ create_grid → create_case → configure_forcings → process_forcings
+```
+
+**Step 2 — Build and run (CESM Runner MCP)**
+```
+"Build the case and submit it"
+→ case_setup → case_build → case_submit
+"Is it running?"
+→ get_job_status → tail_log
+"Change the run length to 5 days and resubmit"
+→ xmlchange(STOP_N=5) → case_submit
+```
+
+**Step 3 — Debug if something goes wrong (Regional Ocean Debugger MCP)**
+```
+"It crashed — what happened?"
+→ find_errors → classify_error → query_domain_knowledge
+"What DT should I use for 1/4°?"
+→ suggest_timestep(0.25)
+"What do experts say about OBC sponge layers?"
+→ query_domain_knowledge("OBC sponge")
+"Show me the MOM_input timestep settings"
+→ read_mom6_params(case_dir, filter="DT")
+```
+
+The three servers are designed to be called in sequence — CrocoDash sets up, CESM Runner drives the CIME lifecycle, and the Debugger closes the loop on failures.
+
+### Wiring up to Claude Code (.mcp.json)
+
+Create `.mcp.json` at the repo root (or `~/.claude/mcp.json` for global access).
+Use the Python from the `CrocoDash` conda env since all three servers can share it:
+
+```bash
+# Find the right Python path
+conda run -n CrocoDash which python
+```
+
+```json
+{
+  "mcpServers": {
+    "crocodash": {
+      "command": "/path/to/conda/envs/CrocoDash/bin/python",
+      "args": ["/glade/u/home/manishrv/documents/croc/dev/MCP_CrocoDash/server.py"]
+    },
+    "cesm-runner": {
+      "command": "/path/to/conda/envs/CrocoDash/bin/python",
+      "args": ["/glade/u/home/manishrv/documents/croc/dev/MCP_cesm_runner/server.py"]
+    },
+    "ocean-debugger": {
+      "command": "/path/to/conda/envs/CrocoDash/bin/python",
+      "args": ["/glade/u/home/manishrv/documents/croc/dev/MCP_regional_ocean_debugger/server.py"]
+    }
+  }
+}
+```
+
+Install all three into the env:
+```bash
+conda run -n CrocoDash pip install fastmcp
+conda run -n CrocoDash pip install -e dev/MCP_cesm_runner/
+conda run -n CrocoDash pip install -e dev/MCP_regional_ocean_debugger/
+# CrocoDash MCP uses CrocoDash directly — no extra install needed
+```
+
+Initialize the knowledge base submodule (Regional Ocean Debugger):
+```bash
+cd dev/MCP_regional_ocean_debugger
+git submodule update --init data/transcripts
+```
+
+### Fast iteration with crocontainer
+
+Use **crocontainer** (`regional_mom_workflows/crocontainer/`) to run CESM interactively
+inside a container — no PBS queue, no wait. The CESM Runner MCP manages the container
+session; lifecycle tools (`case_build`, `case_submit`) route through it via `container=`.
+
+**Runtimes:**
+- **Derecho → Apptainer** — uses a writable sandbox built once from the registry image.
+  `/glade` is bind-mounted transparently so all host paths work inside the container.
+  CESM inputdata mounted directly from `/glade/campaign/cesm/cesmdata/inputdata`.
+- **Laptop → Podman** — pulls `ghcr.io/crocodile-cesm/crocontainer:latest` directly.
+  User specifies a local `inputdata_dir` (pre-downloaded NYF data, ~6.5 GB).
+
+**One-time Derecho setup** (build the Apptainer sandbox, ~1 hr):
+```bash
+build_sandbox()   # via MCP, or:
+qcmd -l walltime=03:00:00 -- apptainer build --sandbox \
+  /glade/derecho/scratch/$USER/crocontainer_sandbox \
+  docker://ghcr.io/crocodile-cesm/crocontainer:latest-amd64
+```
+
+**Typical fast-iteration session:**
+```
+start_container(scratch_dir="~/scratch/croc_scratch")
+case_setup(case_dir, container="croc_session")
+case_build(case_dir, container="croc_session")        # interactive, no queue
+case_submit(case_dir, no_batch=True, container="croc_session")   # runs live
+# Debugger MCP finds error → fix → resubmit in same conversation:
+xmlchange(case_dir, "DT", "900")
+case_submit(case_dir, no_batch=True, container="croc_session")
+stop_container("croc_session")
+```
+
+### Knowledge base (Regional Ocean Debugger)
+
+Backed by expert interview transcripts (`AidanJanney/RegionalMOM6_InterviewTranscripts`, private).
+Git submodule at `dev/MCP_regional_ocean_debugger/data/transcripts/`.
+**Do not make this repo public without authorisation.**
+Topics: MOM6 configuration, OBC, tides, bathymetry, stability, BGC, regional ocean dynamics.
+
+### MCP design principles (all three servers)
+
+- **FastMCP** framework — consistent across all three
+- **Stateless** — no in-memory state; each tool reads from the filesystem per call
+- **File-backed** — config JSON, MOM_input, CaseStatus, etc. are the source of truth
+- **No CI** for dev MCP repos — held to a lower standard than production submodules
+
 ## Development Workflow
 
 - All remote repos are in the [CROCODILE-CESM GitHub org](https://github.com/CROCODILE-CESM)
