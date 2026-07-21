@@ -1,0 +1,16 @@
+20250714 101625.585 INFO             PET3 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+20250714 101625.585 INFO             PET3 !!! THE ESMF_LOG IS SET TO OUTPUT ALL LOG MESSAGES !!!
+20250714 101625.585 INFO             PET3 !!!     THIS MAY CAUSE SLOWDOWN IN PERFORMANCE     !!!
+20250714 101625.585 INFO             PET3 !!! FOR PRODUCTION RUNS, USE:                      !!!
+20250714 101625.585 INFO             PET3 !!!                   ESMF_LOGKIND_Multi_On_Error  !!!
+20250714 101625.585 INFO             PET3 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+20250714 101625.585 INFO             PET3 Running with ESMF Version   : 8.6.1
+20250714 101625.585 INFO             PET3 ESMF library build date/time: "Oct  6 2024" "06:49:58"
+20250714 101625.585 INFO             PET3 ESMF library build location : /home/conda/feedstock_root/build_artifacts/esmf_1728196532903/work
+20250714 101625.585 INFO             PET3 ESMF_COMM                   : mpich
+20250714 101625.585 INFO             PET3 ESMF_MOAB                   : enabled
+20250714 101625.585 INFO             PET3 ESMF_LAPACK                 : enabled
+20250714 101625.585 INFO             PET3 ESMF_NETCDF                 : enabled
+20250714 101625.585 INFO             PET3 ESMF_PNETCDF                : disabled
+20250714 101625.585 INFO             PET3 ESMF_PIO                    : enabled
+20250714 101625.585 INFO             PET3 ESMF_YAMLCPP                : enabled

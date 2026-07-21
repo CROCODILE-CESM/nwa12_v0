@@ -1,0 +1,21 @@
+{
+  "xml_files_missing_in_new": [],
+  "source_mods_missing_files": [],
+  "xmlchanges_missing": [
+    "ATM_DOMAIN_MESH",
+    "ATM_GRID",
+    "ICE_DOMAIN_MESH",
+    "LND_DOMAIN_MESH",
+    "LND_GRID",
+    "MASK_MESH",
+    "NTASKS_OCN",
+    "OCN_DOMAIN_MESH",
+    "OCN_NX",
+    "OCN_NY"
+  ],
+  "user_nl_missing_params": {
+    "cpl": [],
+    "datm": [],
+    "mom": []
+  }
+}

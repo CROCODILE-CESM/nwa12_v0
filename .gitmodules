@@ -4,3 +4,60 @@
 [submodule "regional_mom_workflows/rm6/regional-mom6"]
 	path = regional_mom_workflows/rm6/regional-mom6
 	url = https://github.com/CROCODILE-CESM/regional-mom6
+[submodule "regional_mom_workflows/CrocoDash"]
+	path = regional_mom_workflows/CrocoDash
+	url = https://github.com/CROCODILE-CESM/CrocoDash
+[submodule "regional_mom_workflows/older_workflows/rm6/regional-mom6"]
+	path = regional_mom_workflows/older_workflows/rm6/regional-mom6
+	url = https://github.com/CROCODILE-CESM/regional-mom6
+[submodule "dev/CrocoLens"]
+	path = dev/CrocoLens
+	url = https://github.com/CROCODILE-CESM/CrocoLens/
+[submodule "dev/pyDARTdiags"]
+	path = dev/pyDARTdiags
+	url = git@github.com:NCAR/pyDARTdiags.git
+[submodule "regional_mom_workflows/archive/mom6_bathy"]
+	path = regional_mom_workflows/archive/mom6_bathy
+	url = https://github.com/NCAR/mom6_bathy
+[submodule "dev/SeaSloth"]
+	path = dev/SeaSloth
+	url = git@github.com:CROCODILE-CESM/SeaSloth.git
+[submodule "regional_mom_workflows/crocontainer"]
+	path = regional_mom_workflows/crocontainer
+	url = git@github.com:CROCODILE-CESM/crocontainer.git
+[submodule "regional_mom_workflows/gallery"]
+	path = regional_mom_workflows/gallery
+	url = git@github.com:CROCODILE-CESM/CrocoGallery.git
+[submodule "regional_mom_workflows/visualCaseGen"]
+	path = regional_mom_workflows/visualCaseGen
+	url = git@github.com:CROCODILE-CESM/visualCaseGen.git
+[submodule "regional_mom_workflows/mom6_forge"]
+	path = regional_mom_workflows/mom6_forge
+	url = git@github.com:NCAR/mom6_forge.git
+[submodule "regional_mom_workflows/regional-mom6"]
+	path = regional_mom_workflows/regional-mom6
+	url = git@github.com:CROCODILE-CESM/regional-mom6.git
+[submodule "dev/MCP_CrocoDash"]
+	path = dev/MCP_CrocoDash
+	url = git@github.com:CROCODILE-CESM/MCP_CrocoDash.git
+[submodule "dev/MCP_cesm_runner"]
+	path = dev/MCP_cesm_runner
+	url = git@github.com:CROCODILE-CESM/MCP_cesm_runner.git
+[submodule "dev/MCP_regional_ocean_debugger"]
+	path = dev/MCP_regional_ocean_debugger
+	url = git@github.com:CROCODILE-CESM/MCP_regional_ocean_debugger.git
+[submodule "dev/CrocoDash_ww3"]
+	path = dev/CrocoDash_ww3
+	url = https://github.com/CROCODILE-CESM/CrocoDash
+[submodule "regional_mom_workflows/diag_manager"]
+	path = regional_mom_workflows/diag_manager
+	url = git@github.com:anthony-meza/mom6_diagnostics_gui.git
+[submodule "regional_mom_workflows/staged-recipes"]
+	path = regional_mom_workflows/staged-recipes
+	url = git@github.com:CROCODILE-CESM/staged-recipes.git
+[submodule "regional_mom_workflows/tx2_3"]
+	path = regional_mom_workflows/tx2_3
+	url = git@github.com:NCAR/tx2_3.git
+[submodule "dev/mf_2"]
+	path = dev/mf_2
+	url = git@github.com:NCAR/mom6_forge.git

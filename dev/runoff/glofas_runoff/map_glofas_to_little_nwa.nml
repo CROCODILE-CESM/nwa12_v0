@@ -1,0 +1,12 @@
+&input_nml
+   gridtype     = 'obs'
+   file_roff    = '/glade/u/home/manishrv/documents/croc/dev/runoff/glofas_runoff/domain.roff.glofas_little_nwa_1.nc'
+   file_ocn     = '/glade/u/home/manishrv/croc_input/rt.1.ln/ocnice/scrip_little_nwa12_fee72b.nc'
+   file_nn      = 'map_glofas_to_little_nwa_nn.230403.nc'
+   file_smooth  = 'map_glofas_to_little_nwa_sm.nc'
+   file_new     = 'map_glofas_to_little_nwa_nnsm.nc'
+   title        = 'runoff map: Glofas -> Little NWA, nearest neighbor and smoothed'
+   step1 = .true.
+   step2 = .true.
+   step3 = .true.
+/

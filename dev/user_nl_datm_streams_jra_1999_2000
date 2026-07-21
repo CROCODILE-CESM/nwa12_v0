@@ -1,0 +1,65 @@
+!------------------------------------------------------------------------
+! This file is used to modify datm.streams.xml generated in $RUNDIR
+! Entries should have the form
+!  <streamname>:<stream_variable>= <new stream_value> (NO Quotes!!!)
+! The following are accepted values for a stream named foo
+!  foo:meshfile = character string
+!  foo:datafiles = comma separated string of full pathnames (e.g. file1,file2,file3...)
+!  foo:datavars = comma separated string of field pairs  (e.g. foo foobar,foo2 foobar2...)
+!  foo:taxmode = one of [cycle, extend, limit]
+!  foo:tintalgo = one of [lower,upper,nearest,linear,coszen]
+!  foo:readmode = single (only suported mode right now)
+!  foo:mapalgo = one of [bilinear,redist,nn,consf,consd,none]
+!  foo:dtlimit = real (1.5 is default)
+!  foo:year_first = integer
+!  foo:year_last = integer
+!  foo:year_align = integer
+!  foo:vectors = null or the names of the vector fields in the model (i.e. Sa_u:Sa_v)
+!  foo:lev_dimname: = one of [null,name of level dimenion name]
+!  foo:offset = integer
+! As an example:
+!   foo:year_first = 1950
+! would change the stream year_first stream_entry to 1950 for the foo stream block
+! NOTE: multi-line inputs are enabled by adding a \ at the end of the line
+! As an emaple:
+! foo:datafiles=foo1,foo2, \
+!     foo3
+! Will yield the following new entry for datafiles in stream foo
+!   <datafiles>
+!      <file>foo1</file>
+!      <file>foo2</file>
+!      <file>foo3</file>
+!   </datafiles>
+!------------------------------------------------------------------------
+CORE_IAF_JRA.PREC:year_first = 1999
+CORE_IAF_JRA.PREC:year_last = 2000
+CORE_IAF_JRA.PREC:year_align = 1999
+CORE_IAF_JRA.PREC:datafiles = /glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.prec.TL319.1999.171019.nc,/glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.prec.TL319.2000.171019.nc
+CORE_IAF_JRA.LWDN:year_first = 1999
+CORE_IAF_JRA.LWDN:year_last = 2000
+CORE_IAF_JRA.LWDN:year_align = 1999
+CORE_IAF_JRA.LWDN:datafiles = /glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.lwdn.TL319.1999.171019.nc,/glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.lwdn.TL319.2000.171019.nc
+CORE_IAF_JRA.SWDN:year_first = 1999
+CORE_IAF_JRA.SWDN:year_last = 2000
+CORE_IAF_JRA.SWDN:year_align = 1999
+CORE_IAF_JRA.SWDN:datafiles = /glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.swdn.TL319.1999.171019.nc,/glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.swdn.TL319.2000.171019.nc
+CORE_IAF_JRA.Q_10:year_first = 1999
+CORE_IAF_JRA.Q_10:year_last = 2000
+CORE_IAF_JRA.Q_10:year_align = 1999
+CORE_IAF_JRA.Q_10:datafiles = /glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.q_10.TL319.1999.171019.nc,/glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.q_10.TL319.2000.171019.nc
+CORE_IAF_JRA.SLP_:year_first = 1999
+CORE_IAF_JRA.SLP_:year_last = 2000
+CORE_IAF_JRA.SLP_:year_align = 1999
+CORE_IAF_JRA.SLP_:datafiles = /glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.slp.TL319.1999.171019.nc,/glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.slp.TL319.2000.171019.nc
+CORE_IAF_JRA.T_10:year_first = 1999
+CORE_IAF_JRA.T_10:year_last = 2000
+CORE_IAF_JRA.T_10:year_align = 1999
+CORE_IAF_JRA.T_10:datafiles = /glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.t_10.TL319.1999.171019.nc,/glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.t_10.TL319.2000.171019.nc
+CORE_IAF_JRA.U_10:year_first = 1999
+CORE_IAF_JRA.U_10:year_last = 2000
+CORE_IAF_JRA.U_10:year_align = 1999
+CORE_IAF_JRA.U_10:datafiles = /glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.u_10.TL319.1999.171019.nc,/glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.u_10.TL319.2000.171019.nc
+CORE_IAF_JRA.V_10:year_first = 1999
+CORE_IAF_JRA.V_10:year_last = 2000
+CORE_IAF_JRA.V_10:year_align = 1999
+CORE_IAF_JRA.V_10:datafiles = /glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.v_10.TL319.1999.171019.nc,/glade/campaign/cesm/cesmdata/inputdata/ocn/jra55/v1.3_noleap/JRA.v1.3.v_10.TL319.2000.171019.nc

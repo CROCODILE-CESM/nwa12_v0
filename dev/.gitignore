@@ -1,0 +1,9 @@
+testing_diffs/
+.temp*
+outputs/
+control/
+configs/
+__pycache__/
+.ipynb_checkpoints/
+*.nc
+visualizations/

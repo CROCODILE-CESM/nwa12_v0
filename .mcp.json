@@ -1,0 +1,19 @@
+{
+  "mcpServers": {
+    "crocodash": {
+      "command": "/glade/work/manishrv/conda-envs/CrocoDash/bin/python",
+      "args": ["/glade/u/home/manishrv/documents/croc/dev/MCP_CrocoDash/server.py"],
+      "env": {
+        "CIME_MACHINE": "derecho"
+      }
+    },
+    "cesm-runner": {
+      "command": "/glade/work/manishrv/conda-envs/CrocoDash/bin/python",
+      "args": ["/glade/u/home/manishrv/documents/croc/dev/MCP_cesm_runner/server.py"]
+    },
+    "ocean-debugger": {
+      "command": "/glade/work/manishrv/conda-envs/CrocoDash/bin/python",
+      "args": ["/glade/u/home/manishrv/documents/croc/dev/MCP_regional_ocean_debugger/server.py"]
+    }
+  }
+}
